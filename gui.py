@@ -71,6 +71,18 @@ class Description(QLabel):
 			color: #7CB7EF;
 			''')
 
+class BodyText(QLabel):
+	def __init__(self, parent=None):
+		super(BodyText, self).__init__(parent)
+		self.setAlignment(QtCore.Qt.AlignCenter)
+		self.setStyleSheet('''
+			font-size: 15px;
+			font-weight: bold;
+			font-family: "Sawasdee";
+			color: #7CB7EF;
+			''')
+		self.setWordWrap(True)
+
 class defaultWindow(QWidget):
 	def __init__(self, parent=None):
 		super(defaultWindow, self).__init__(parent)
@@ -83,6 +95,17 @@ class defaultWindow(QWidget):
 		self.layout.setContentsMargins(5, 5, 5, 5)
 		self.layout.setSpacing(0)
 		self.setLayout(self.layout)
+
+class RadioButtonQ1(QRadioButton):
+	def __init__(self, parent=None):
+		super(RadioButtonQ1, self).__init__(parent)
+		self.setStyleSheet('''
+			font-size: 15px;
+			font-weight: bold;
+			font-family: "Sawasdee";
+			color: #7CB7EF;
+			''')
+
 
 class UIMain(QWidget):
 	def setupUI(self, Window):
@@ -108,16 +131,9 @@ class UIMain(QWidget):
 
 		#Description
 		label2 = Description("About")
-		label3 = QLabel("This program calculates the PPI of a household basing on the total score obtained after" \
+		label3 = BodyText("This program calculates the PPI of a household basing on the total score obtained after" \
 			+ " completing our standardized questionnaire.")
-		label3.setAlignment(QtCore.Qt.AlignCenter)
-		label3.setStyleSheet('''
-			font-size: 15px;
-			font-weight: bold;
-			font-family: "Sawasdee";
-			color: #7CB7EF;
-			''')
-		label3.setWordWrap(True)
+		
 		self.stack1.layout.addWidget(label2)
 		self.stack1.layout.addWidget(label3)
 
@@ -139,7 +155,25 @@ class UIMain(QWidget):
 		label1 = Heading("Questionnaire")
 		self.stack2.layout.addWidget(label1)
 
+		#Description
+		label2 = BodyText("Click on the option that best represents your response.")
+		self.stack2.layout.addWidget(label2)
+
 		#Radio button selection
+		self.Q1answer = ''
+		self.radiobutton1Q1 = RadioButtonQ1("Brazil")
+
+		self.radiobutton1Q1.setChecked(True)
+		self.radiobutton1Q1.figure = "Square"
+		self.stack2.layout.addWidget(self.radiobutton1Q1)
+
+		self.radiobutton1Q2 = RadioButtonQ1("France")
+		self.radiobutton1Q2.figure = "Triangle"
+		self.stack2.layout.addWidget(self.radiobutton1Q2)
+
+		self.radiobutton1Q3 = RadioButtonQ1("Germany")
+		self.radiobutton1Q3.figure = "Circle"
+		self.stack2.layout.addWidget(self.radiobutton1Q3)
 
 		#Navigation buttons
 		gbox = QGroupBox("")

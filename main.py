@@ -11,6 +11,10 @@ class Window(QMainWindow, UIMain):
 		self.page1_button.clicked.connect(self.openPage1UI)
 		self.page0_button.clicked.connect(self.openHomeUI)
 
+		self.radiobutton1Q1.toggled.connect(self.on_q1_toggle)
+		self.radiobutton1Q2.toggled.connect(self.on_q1_toggle)
+		self.radiobutton1Q3.toggled.connect(self.on_q1_toggle)
+
 	def openHomeUI(self):
 		print("Back")
 		self.QtStack.setCurrentIndex(0)
@@ -18,6 +22,13 @@ class Window(QMainWindow, UIMain):
 	def openPage1UI(self):
 		print("Next")
 		self.QtStack.setCurrentIndex(1)
+
+	def on_q1_toggle(self):
+		radiobutton = self.sender()
+
+		if radiobutton.isChecked():
+			print(radiobutton.figure)
+
 
 if __name__ == '__main__':
 	app = QApplication(sys.argv)
