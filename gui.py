@@ -3,7 +3,8 @@
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5 import QtCore
-import sys
+from models import *
+import sys, sqlite3
 
 class navBtn(QPushButton):
 	def __init__(self, parent=None):
@@ -151,30 +152,30 @@ class UIMain(QWidget):
 		hbox.addWidget(self.page1_button)
 
 	def setupPage1UI(self):
+		#Database Connect
+		conn = sqlite3.connect('testdb')
+
 		#Heading
 		label1 = Heading("Questionnaire")
 		self.stack2.layout.addWidget(label1)
 
 		#Description
-		label2 = BodyText("Click on the option that best represents your response.")
+		a = conn.execute('SELECT name FROM Questions WHERE parent="Uganda" AND q_number=1')
+		for i in a:
+			qn1 = str(i[0])
+		label2 = BodyText(qn1)
 		self.stack2.layout.addWidget(label2)
 
 		#Radio button selection
-		self.Q1answer = ''
-		self.radiobutton1Q1 = RadioButtonQ1("Brazil")
+		b = conn.execute('SELECT name FROM Options WHERE parent="Uganda" AND q_number=1')
+		for i in b:
+			option1 = str(i[0])
+			radiobutton1Q1 = RadioButtonQ1(option1)
 
-		self.radiobutton1Q1.setChecked(True)
-		self.radiobutton1Q1.figure = "Square"
-		self.stack2.layout.addWidget(self.radiobutton1Q1)
-
-		self.radiobutton1Q2 = RadioButtonQ1("France")
-		self.radiobutton1Q2.figure = "Triangle"
-		self.stack2.layout.addWidget(self.radiobutton1Q2)
-
-		self.radiobutton1Q3 = RadioButtonQ1("Germany")
-		self.radiobutton1Q3.figure = "Circle"
-		self.stack2.layout.addWidget(self.radiobutton1Q3)
-
+			radiobutton1Q1.figure = option1
+			radiobutton1Q1.toggled.connect(self.on_q1_toggle)
+			self.stack2.layout.addWidget(radiobutton1Q1)
+		
 		#Navigation buttons
 		gbox = QGroupBox("")
 		hbox = QHBoxLayout()
@@ -189,3 +190,9 @@ class UIMain(QWidget):
 		hbox.addWidget(self.page0_button)
 		hbox.addWidget(close_button)
 		hbox.addWidget(self.page2_button)
+
+	def on_q1_toggle(self):
+		radiobutton = self.sender()
+
+		if radiobutton.isChecked():
+			print(radiobutton.figure)
