@@ -6,6 +6,20 @@ from PyQt5 import QtCore
 from models import *
 import sys, sqlite3
 
+class defaultWindow(QWidget):
+	def __init__(self, parent=None):
+		super(defaultWindow, self).__init__(parent)
+		self.setWindowTitle("Kamya's PPI Calculator")
+		self.resize(500, 600)
+		self.setStyleSheet('''
+				border-style: none;
+				background-color: #101e41;
+			''')
+		self.layout = QVBoxLayout()
+		self.layout.setContentsMargins(5, 5, 5, 5)
+		self.layout.setSpacing(0)
+		self.setLayout(self.layout)
+
 class navBtn(QPushButton):
 	def __init__(self, parent=None):
 		super(navBtn, self).__init__(parent)
@@ -84,19 +98,6 @@ class BodyText(QLabel):
 			''')
 		self.setWordWrap(True)
 
-class defaultWindow(QWidget):
-	def __init__(self, parent=None):
-		super(defaultWindow, self).__init__(parent)
-		self.resize(400, 400)
-		self.setStyleSheet('''
-				border-style: none;
-				background-color: #101e41;
-			''')
-		self.layout = QVBoxLayout()
-		self.layout.setContentsMargins(5, 5, 5, 5)
-		self.layout.setSpacing(0)
-		self.setLayout(self.layout)
-
 class RadioButtonQ1(QRadioButton):
 	def __init__(self, parent=None):
 		super(RadioButtonQ1, self).__init__(parent)
@@ -107,6 +108,22 @@ class RadioButtonQ1(QRadioButton):
 			color: #7CB7EF;
 			''')
 
+class NationalityMenu(QComboBox):
+	def __init__(self, parent=None):
+		super(NationalityMenu, self).__init__(parent)
+		self.setObjectName('nMenu')
+		self.setStyleSheet('''QWidget#nMenu
+			{	
+				background-color: #117061;
+				border-width: 2px 2px 2px 2px;
+				border-style: solid;
+				font-weight: bold;
+				font-family: "Sawasdee";
+				border-color: #FFFFFF;
+				color: #FFFFFF;
+				font-size: 15px;
+			}
+			''')
 
 class UIMain(QWidget):
 	def setupUI(self, Window):
@@ -125,6 +142,8 @@ class UIMain(QWidget):
 		
 	def setupHomeUI(self):
 		#self.setWindowTitle("Hello")
+		#Open database
+		conn = sqlite3.connect('testdb')
 
 		#Heading
 		label1 = Heading("PPI Calculator")
@@ -134,12 +153,27 @@ class UIMain(QWidget):
 		label2 = Description("About")
 		label3 = BodyText("This program calculates the PPI of a household basing on the total score obtained after" \
 			+ " completing our standardized questionnaire.")
-		
+		label4 = BodyText("Please select a country")
 		self.stack1.layout.addWidget(label2)
 		self.stack1.layout.addWidget(label3)
+		self.stack1.layout.addWidget(label4)
+
+		#Nationality Menu
+		nbox = QGroupBox('')
+		nhbox = QHBoxLayout()
+		nhbox.setContentsMargins(100, 0, 100, 0)
+		nbox.setLayout(nhbox)
+		
+		self.n_combobox = NationalityMenu(self)
+		nats = conn.execute('SELECT NAME FROM NATIONALITIES;')
+		for i in nats:
+			self.n_combobox.addItem(i[0])
+		
+		nhbox.addWidget(self.n_combobox)
+		self.stack1.layout.addWidget(nbox)
 
 		#Navigation buttons
-		gbox = QGroupBox("")
+		gbox = QGroupBox('')
 		hbox = QHBoxLayout()
 		gbox.setLayout(hbox)
 
@@ -151,12 +185,15 @@ class UIMain(QWidget):
 		hbox.addWidget(close_button)
 		hbox.addWidget(self.page1_button)
 
+		#Close database
+		conn.close()
+
 	def setupPage1UI(self):
 		#Database Connect
 		conn = sqlite3.connect('testdb')
 
 		#Heading
-		label1 = Heading("Questionnaire")
+		label1 = Heading('Questionnaire')
 		self.stack2.layout.addWidget(label1)
 
 		#Description
@@ -167,32 +204,29 @@ class UIMain(QWidget):
 		self.stack2.layout.addWidget(label2)
 
 		#Radio button selection
+		btn_gbox = QGroupBox('')
+		vbox = QVBoxLayout()
+		btn_gbox.setLayout(vbox)
+		self.stack2.layout.addWidget(btn_gbox)
 		b = conn.execute('SELECT name FROM Options WHERE parent="Uganda" AND q_number=1')
 		for i in b:
 			option1 = str(i[0])
-			radiobutton1Q1 = RadioButtonQ1(option1)
-
-			radiobutton1Q1.figure = option1
-			radiobutton1Q1.toggled.connect(self.on_q1_toggle)
-			self.stack2.layout.addWidget(radiobutton1Q1)
+			self.radiobutton1Q1 = RadioButtonQ1(option1)
+			self.radiobutton1Q1.figure = option1
+			self.radiobutton1Q1.toggled.connect(self.on_q1_toggle)
+			vbox.addWidget(self.radiobutton1Q1)
 		
 		#Navigation buttons
-		gbox = QGroupBox("")
+		nav_gbox = QGroupBox('')
 		hbox = QHBoxLayout()
-		gbox.setLayout(hbox)
+		nav_gbox.setLayout(hbox)
 
-		self.page0_button = navBtn("Back")
-		close_button = navBtn("Close")
+		self.page0_button = navBtn('Back')
+		close_button = navBtn('Close')
 		close_button.clicked.connect(navBtn.click_close)
-		self.page2_button = navBtn("Next")
-		self.stack2.layout.addWidget(gbox)
+		self.page2_button = navBtn('Next')
+		self.stack2.layout.addWidget(nav_gbox)
 		hbox.setSpacing(50)
 		hbox.addWidget(self.page0_button)
 		hbox.addWidget(close_button)
 		hbox.addWidget(self.page2_button)
-
-	def on_q1_toggle(self):
-		radiobutton = self.sender()
-
-		if radiobutton.isChecked():
-			print(radiobutton.figure)

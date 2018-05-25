@@ -147,6 +147,26 @@ class wService():
 		self.properties = []
 
 class lookupService(wService):
+	def __create_database_entries__(self):
+		self.__create_statement__()
+		conn = sqlite3.connect('testdb')
+		try:
+			conn.execute(self.create_statement)
+			print("Table created")
+			conn.execute('INSERT INTO EXISTING (NAME) VALUES ("' + str(self.entity_name) + '"); ')
+			conn.execute('INSERT INTO NATIONALITIES (NAME) VALUES ("' + str(self.entity_name) + '"); ')
+			print("PPI name added to nationalities")
+			print("Table name added to existing")
+			for i in self.properties:
+				conn.execute('INSERT INTO PROPERTY_LIST (NAME, PARENT) VALUES ("'  + str(i) + '", "' \
+					+ str(self.entity_name) + '" );')
+			print('Properties added to property_list')
+			conn.commit()
+			self.table_created = True
+		except sqlite3.OperationalError as e:
+			print(e)
+		conn.close()
+
 	def load_spreadsheet_values(self, sheetname):
 		#load spreadsheet file
 		if str(sheetname[-4:]) == 'xlsx' or str(sheetname[-3:]) == 'xls':
@@ -169,9 +189,10 @@ class lookupService(wService):
 class SetupDatabase():
 	def __init__(self):
 		setup()
-		
-		#Create default PPI Table
+
+		#Create default PPI Tables
 		default_ppi = lookupService('Uganda', ppi_range='int', dOH='real', dTH='real', dThH='real', poorest='real')
+		default_ppi = lookupService('Kenya', ppi_range='int', dOH='real', dTH='real', dThH='real', poorest='real')
 		default_ppi.load_spreadsheet_values('testPPIv2.xlsx')
 
 		#Create Questions Table, insert default Questions
@@ -189,14 +210,14 @@ class SetupDatabase():
 		#Create Households Table
 		Households = wService('Households', score='real', ppi_index='int', parent='text')
 
-
 class setup():
 	def __init__(self):
 		#Setup
 		try:
 			conn = sqlite3.connect('testdb')
-			conn.execute("CREATE TABLE EXISTING (NAME TEXT NOT NULL)")
-			conn.execute("CREATE TABLE PROPERTY_LIST (NAME TEXT NOT NULL, PARENT TEXT NOT NULL)")
+			conn.execute('CREATE TABLE EXISTING (NAME TEXT NOT NULL)')
+			conn.execute('CREATE TABLE PROPERTY_LIST (NAME TEXT NOT NULL, PARENT TEXT NOT NULL)')
+			conn.execute('CREATE TABLE NATIONALITIES (NAME TEXT NOT NULL)')
 			conn.commit()
 		except sqlite3.OperationalError as e:
 			print(e)
