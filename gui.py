@@ -90,7 +90,8 @@ class Description(QLabel):
 class BodyText(QLabel):
 	def __init__(self, parent=None):
 		super(BodyText, self).__init__(parent)
-		self.setAlignment(Qt.AlignCenter)
+		self.setAlignment(Qt.AlignLeft)
+		self.setContentsMargins(30, 0, 0, 0)
 		self.setStyleSheet('''
 			font-size: 15px;
 			font-weight: bold;
@@ -106,7 +107,7 @@ class PPIRadioButton(QRadioButton):
 			font-size: 15px;
 			font-weight: bold;
 			font-family: "Sawasdee";
-			color: #7CB7EF;
+			color: #FFBF35;
 			''')
 		self.setText(self.wrapText(self.text(), 7))
 	
@@ -160,14 +161,14 @@ class UIMain(QWidget):
 		self.stack3 = defaultWindow()
 		self.stack4 = defaultWindow()
 		self.stack5 = defaultWindow()
+		self.stack6 = defaultWindow()
+		self.stack7 = defaultWindow()
+		self.stack8 = defaultWindow()
+		self.stack9 = defaultWindow()
+		self.stack10 = defaultWindow()
 
 		self.setupHomeUI()
 		self.QtStack.addWidget(self.stack0)
-		'''
-		self.QtStack.addWidget(self.stack1)
-		self.QtStack.addWidget(self.stack2)
-		self.QtStack.addWidget(self.stack3)
-		'''
 		
 	def setupHomeUI(self):
 		#Open database
@@ -216,242 +217,49 @@ class UIMain(QWidget):
 		#Close database
 		conn.close()
 
-	def setupPage1UI(self):
+	def setupQuestionnairePage(self, stack, q_number, rbtn_function, backbtn, nextbtn):
 		#Database Connect
 		conn = sqlite3.connect('testdb')
 
 		#Heading
 		label1 = Heading('Questionnaire')
-		self.stack1.layout.addWidget(label1)
+		stack.layout.addWidget(label1)
 
 		#Description
-		a = conn.execute('SELECT name FROM Questions WHERE parent="' + self.selected_nation + '" AND q_number=1')
+		a = conn.execute('SELECT name FROM Questions WHERE parent="' + self.selected_nation + '" AND q_number=' + str(q_number))
 		print("Changed nation to: " + self.selected_nation)
 		for i in a:
 			qn1 = str(i[0])
 		label2 = BodyText(qn1)
-		self.stack1.layout.addWidget(label2)
+		stack.layout.addWidget(label2)
 
 		#Radio button selection
 		btn_gbox = QGroupBox('')
 		vbox = RadioButtonGroup()
 		btn_gbox.setLayout(vbox)
-		self.stack1.layout.addWidget(btn_gbox)
-		b = conn.execute('SELECT * FROM Options WHERE parent="' + self.selected_nation + '" AND q_number=1')
+		stack.layout.addWidget(btn_gbox)
+		b = conn.execute('SELECT * FROM Options WHERE parent="' + self.selected_nation + '" AND q_number=' + str(q_number))
 		for i in b:
 			option1 = str(i[0])
-			self.radiobuttonQ1 = PPIRadioButton(option1)
-			self.radiobuttonQ1.figure = str(i[3])
-			self.radiobuttonQ1.toggled.connect(self.on_q1_toggle)
-			vbox.addWidget(self.radiobuttonQ1)
-		self.radiobuttonQ1.setChecked(True)
+			radiobutton = PPIRadioButton(option1)
+			radiobutton.figure = str(i[3])
+			radiobutton.toggled.connect(rbtn_function)
+			vbox.addWidget(radiobutton)
+		radiobutton.setChecked(True)
 
 		#Navigation buttons
 		nav_gbox = QGroupBox('')
 		hbox = QHBoxLayout()
 		nav_gbox.setLayout(hbox)
 
-		self.page1_back_button = navBtn('Back')
-		close_button = navBtn('Close')
-		close_button.clicked.connect(navBtn.click_close)
-		self.page1_next_button = navBtn('Next')
-		self.stack1.layout.addWidget(nav_gbox)
+		closebtn = navBtn('Close')
+		closebtn.clicked.connect(navBtn.click_close)
+		
+		stack.layout.addWidget(nav_gbox)
 		hbox.setSpacing(50)
-		hbox.addWidget(self.page1_back_button)
-		hbox.addWidget(close_button)
-		hbox.addWidget(self.page1_next_button)
-
-		#Database close
-		conn.close()
-
-	def setupPage2UI(self):
-		#Database Connect
-		conn = sqlite3.connect('testdb')
-
-		#Heading
-		label1 = Heading('Questionnaire')
-		self.stack2.layout.addWidget(label1)
-
-		#Description
-		a = conn.execute('SELECT name FROM Questions WHERE parent="' + self.selected_nation + '" AND q_number=2')
-		print("Changed nation to: " + self.selected_nation)
-		for i in a:
-			qn1 = str(i[0])
-		label2 = BodyText(qn1)
-		self.stack2.layout.addWidget(label2)
-
-		#Radio button selection
-		btn_gbox = QGroupBox('')
-		vbox = RadioButtonGroup()
-		btn_gbox.setLayout(vbox)
-		self.stack2.layout.addWidget(btn_gbox)
-		b = conn.execute('SELECT * FROM Options WHERE parent="' + self.selected_nation + '" AND q_number=2')
-		for i in b:
-			option1 = str(i[0])
-			self.radiobuttonQ2 = PPIRadioButton(option1)
-			self.radiobuttonQ2.figure = str(i[3])
-			self.radiobuttonQ2.toggled.connect(self.on_q2_toggle)
-			vbox.addWidget(self.radiobuttonQ2)
-		self.radiobuttonQ2.setChecked(True)
-
-		#Navigation buttons
-		nav_gbox = QGroupBox('')
-		hbox = QHBoxLayout()
-		nav_gbox.setLayout(hbox)
-
-		self.page2_back_button = navBtn('Back')
-		close_button = navBtn('Close')
-		close_button.clicked.connect(navBtn.click_close)
-		self.page2_next_button = navBtn('Next')
-		self.stack2.layout.addWidget(nav_gbox)
-		hbox.setSpacing(50)
-		hbox.addWidget(self.page2_back_button)
-		hbox.addWidget(close_button)
-		hbox.addWidget(self.page2_next_button)
-
-		#Database close
-		conn.close()
-
-	def setupPage3UI(self):
-		#Database Connect
-		conn = sqlite3.connect('testdb')
-
-		#Heading
-		label1 = Heading('Questionnaire')
-		self.stack3.layout.addWidget(label1)
-
-		#Description
-		a = conn.execute('SELECT name FROM Questions WHERE parent="' + self.selected_nation + '" AND q_number=3')
-		print("Changed nation to: " + self.selected_nation)
-		for i in a:
-			qn1 = str(i[0])
-		label2 = BodyText(qn1)
-		self.stack3.layout.addWidget(label2)
-
-		#Radio button selection
-		btn_gbox = QGroupBox('')
-		vbox = RadioButtonGroup()
-		btn_gbox.setLayout(vbox)
-		self.stack3.layout.addWidget(btn_gbox)
-		b = conn.execute('SELECT * FROM Options WHERE parent="' + self.selected_nation + '" AND q_number=3')
-		for i in b:
-			option1 = str(i[0])
-			self.radiobuttonQ3 = PPIRadioButton(option1)
-			self.radiobuttonQ3.figure = str(i[3])
-			self.radiobuttonQ3.toggled.connect(self.on_q3_toggle)
-			vbox.addWidget(self.radiobuttonQ3)
-		self.radiobuttonQ3.setChecked(True)
-
-		#Navigation buttons
-		nav_gbox = QGroupBox('')
-		hbox = QHBoxLayout()
-		nav_gbox.setLayout(hbox)
-
-		self.page3_back_button = navBtn('Back')
-		close_button = navBtn('Close')
-		close_button.clicked.connect(navBtn.click_close)
-		self.page3_next_button = navBtn('Next')
-		self.stack3.layout.addWidget(nav_gbox)
-		hbox.setSpacing(50)
-		hbox.addWidget(self.page3_back_button)
-		hbox.addWidget(close_button)
-		hbox.addWidget(self.page3_next_button)
-
-		#Database close
-		conn.close()
-
-	def setupPage4UI(self):
-		#Database Connect
-		conn = sqlite3.connect('testdb')
-
-		#Heading
-		label1 = Heading('Questionnaire')
-		self.stack4.layout.addWidget(label1)
-
-		#Description
-		a = conn.execute('SELECT name FROM Questions WHERE parent="' + self.selected_nation + '" AND q_number=4')
-		print("Changed nation to: " + self.selected_nation)
-		for i in a:
-			qn1 = str(i[0])
-		label2 = BodyText(qn1)
-		self.stack4.layout.addWidget(label2)
-
-		#Radio button selection
-		btn_gbox = QGroupBox('')
-		vbox = RadioButtonGroup()
-		btn_gbox.setLayout(vbox)
-		self.stack4.layout.addWidget(btn_gbox)
-		b = conn.execute('SELECT * FROM Options WHERE parent="' + self.selected_nation + '" AND q_number=4')
-		for i in b:
-			option1 = str(i[0])
-			self.radiobuttonQ4 = PPIRadioButton(option1)
-			self.radiobuttonQ4.figure = str(i[3])
-			self.radiobuttonQ4.toggled.connect(self.on_q4_toggle)
-			vbox.addWidget(self.radiobuttonQ4)
-		self.radiobuttonQ4.setChecked(True)
-
-		#Navigation buttons
-		nav_gbox = QGroupBox('')
-		hbox = QHBoxLayout()
-		nav_gbox.setLayout(hbox)
-
-		self.page4_back_button = navBtn('Back')
-		close_button = navBtn('Close')
-		close_button.clicked.connect(navBtn.click_close)
-		self.page4_next_button = navBtn('Next')
-		self.stack4.layout.addWidget(nav_gbox)
-		hbox.setSpacing(50)
-		hbox.addWidget(self.page4_back_button)
-		hbox.addWidget(close_button)
-		hbox.addWidget(self.page4_next_button)
-
-		#Database close
-		conn.close()
-
-	def setupPage5UI(self):
-		#Database Connect
-		conn = sqlite3.connect('testdb')
-
-		#Heading
-		label1 = Heading('Questionnaire')
-		self.stack5.layout.addWidget(label1)
-
-		#Description
-		a = conn.execute('SELECT name FROM Questions WHERE parent="' + self.selected_nation + '" AND q_number=5')
-		print("Changed nation to: " + self.selected_nation)
-		for i in a:
-			qn1 = str(i[0])
-		label2 = BodyText(qn1)
-		self.stack5.layout.addWidget(label2)
-
-		#Radio button selection
-		btn_gbox = QGroupBox('')
-		vbox = RadioButtonGroup()
-		btn_gbox.setLayout(vbox)
-		self.stack5.layout.addWidget(btn_gbox)
-		b = conn.execute('SELECT * FROM Options WHERE parent="' + self.selected_nation + '" AND q_number=5')
-		for i in b:
-			option1 = str(i[0])
-			self.radiobuttonQ5 = PPIRadioButton(option1)
-			self.radiobuttonQ5.figure = str(i[3])
-			self.radiobuttonQ5.toggled.connect(self.on_q5_toggle)
-			vbox.addWidget(self.radiobuttonQ5)
-		self.radiobuttonQ5.setChecked(True)
-
-		#Navigation buttons
-		nav_gbox = QGroupBox('')
-		hbox = QHBoxLayout()
-		nav_gbox.setLayout(hbox)
-
-		self.page5_back_button = navBtn('Back')
-		close_button = navBtn('Close')
-		close_button.clicked.connect(navBtn.click_close)
-		self.page5_next_button = navBtn('Next')
-		self.stack5.layout.addWidget(nav_gbox)
-		hbox.setSpacing(50)
-		hbox.addWidget(self.page5_back_button)
-		hbox.addWidget(close_button)
-		hbox.addWidget(self.page5_next_button)
+		hbox.addWidget(backbtn)
+		hbox.addWidget(closebtn)
+		hbox.addWidget(nextbtn)
 
 		#Database close
 		conn.close()

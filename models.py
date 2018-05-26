@@ -202,6 +202,11 @@ class SetupDatabase():
 		Questions.insert_item('3. Can the (oldest) female head/spouse read and write with understanding in any language?', 'Uganda', 3)
 		Questions.insert_item('4. What type of material is mainly used for construction of the wall of the dwelling?', 'Uganda', 4)
 		Questions.insert_item('5. What type of material is mainly used for construction of the roof of the dwelling?', 'Uganda', 5)
+		Questions.insert_item('6. What source of energy does the household mainly use for cooking?', 'Uganda', 6)
+		Questions.insert_item('7. What type of toilet facility does the household mainly use?', 'Uganda', 7)
+		Questions.insert_item('8. How many mobile phones do members of your household own?', 'Uganda', 8)
+		Questions.insert_item('9. Does any member of your household own a radio?', 'Uganda', 9)
+		Questions.insert_item('10. Does every member of the household have at least one pair of shoes?', 'Uganda', 10)
 
 		Questions.insert_item('Kenyan locations', 'Kenya', 1)
 		Questions.insert_item('Kenyan Foods', 'Kenya', 2)
@@ -233,6 +238,26 @@ class SetupDatabase():
 		#Question Five
 		Options.insert_item('Thatch or tins', 'Uganda', 5, 0)
 		Options.insert_item('Iron sheets, concrete, tiles, asbestos or other', 'Uganda', 5, 5)
+		#Question Six
+		Options.insert_item('Firewood, cow dung or grass (reeds)', 'Uganda', 6, 0)
+		Options.insert_item('Charcoal, paraffin stove, gas, biogas, electricity (regardless of source) or other', 'Uganda', 6, 6)
+		#Question Seven
+		Options.insert_item('No facility/bush/polythene bags/bucket/etc.. or other', 'Uganda', 7, 0)
+		Options.insert_item('Uncovered pit latrine (with or without slab), Ecosan (compost toilet), or covered pit latrine '\
+			+ 'without slab', 'Uganda', 7, 4)
+		Options.insert_item('Covered pit latrine with slab', 'Uganda', 7, 6)
+		Options.insert_item('VIP latrine, or flush toilet', 'Uganda', 7, 11)
+		#Question Eight
+		Options.insert_item('None', 'Uganda', 8, 0)
+		Options.insert_item('One', 'Uganda', 8, 7)
+		Options.insert_item('Two', 'Uganda', 8, 12)
+		Options.insert_item('Three or more', 'Uganda', 8, 22)
+		#Question Nine
+		Options.insert_item('None', 'Uganda', 9, 0)
+		Options.insert_item('Yes', 'Uganda', 9, 7)
+		#Question Ten
+		Options.insert_item('No', 'Uganda', 10, 0)
+		Options.insert_item('Yes', 'Uganda', 10, 9)
 		'''
 		Options.insert_item('Matooke', 'Uganda', 2)
 		Options.insert_item('Malakwang', 'Uganda', 2)
