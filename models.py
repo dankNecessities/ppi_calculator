@@ -197,16 +197,34 @@ class SetupDatabase():
 
 		#Create Questions Table, insert default Questions
 		Questions = wService('Questions', name='text', parent='text', q_number='int')
-		Questions.insert_item('Where are you?', 'Uganda', 1)
-		Questions.insert_item('What do you eat?', 'Uganda', 2)
+		Questions.insert_item('1. How many members does the household have?', 'Uganda', 1)
+		Questions.insert_item('2. Are all household members ages 6 to 12 currently in school?', 'Uganda', 2)
+		Questions.insert_item('3. Can the (oldest) female head/spouse read and write with understanding in any language?', 'Uganda', 3)
 
 		Questions.insert_item('Kenyan locations', 'Kenya', 1)
 		Questions.insert_item('Kenyan Foods', 'Kenya', 2)
 
-		#Create a few Options, insert defaults
-		Options = wService('Options', name='text', parent='text', q_number='int')
-		Options.insert_item('Kampala', 'Uganda', 1)
-		Options.insert_item('Lira', 'Uganda', 1)
+		#Create Options
+		Options = wService('Options', name='text', parent='text', q_number='int', value='int')
+		#Question One
+		Options.insert_item('Nine or more', 'Uganda', 1, 0)
+		Options.insert_item('Eight', 'Uganda', 1, 3)
+		Options.insert_item('Seven', 'Uganda', 1, 4)
+		Options.insert_item('Five or Six', 'Uganda', 1, 6)
+		Options.insert_item('Four', 'Uganda', 1, 8)
+		Options.insert_item('Three', 'Uganda', 1, 12)
+		Options.insert_item('Four', 'Uganda', 1, 8)
+		Options.insert_item('Two', 'Uganda', 1, 21)
+		Options.insert_item('One', 'Uganda', 1, 28)
+		#Question Two
+		Options.insert_item('No', 'Uganda', 2, 0)
+		Options.insert_item('Yes', 'Uganda', 2, 2)
+		Options.insert_item('No one currently ages 6 to 12', 'Uganda', 2, 5)
+		#Question Three
+		Options.insert_item('No', 'Uganda', 3, 0)
+		Options.insert_item('No female head/spouse', 'Uganda', 3, 0)
+		Options.insert_item('Yes', 'Uganda', 3, 3)
+		'''
 		Options.insert_item('Matooke', 'Uganda', 2)
 		Options.insert_item('Malakwang', 'Uganda', 2)
 
@@ -214,7 +232,7 @@ class SetupDatabase():
 		Options.insert_item('Mombasa', 'Kenya', 1)
 		Options.insert_item('Ugali', 'Kenya', 2)
 		Options.insert_item('Beans', 'Kenya', 2)
-
+		'''
 		#Create Households Table
 		Households = wService('Households', score='real', ppi_index='int', parent='text')
 
