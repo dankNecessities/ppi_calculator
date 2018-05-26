@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from models import *
-import sys, sqlite3
+import sys, sqlite3, re
 
 class defaultWindow(QWidget):
 	def __init__(self, parent=None):
@@ -108,6 +108,23 @@ class PPIRadioButton(QRadioButton):
 			font-family: "Sawasdee";
 			color: #7CB7EF;
 			''')
+		self.setText(self.wrapText(self.text(), 7))
+	
+	def wrapText(self, text, width):
+		a = re.split(' ', text)
+		p = ''
+		i = 0
+		limit = width - 1
+		for q in a:
+			if i < limit:
+				p += q + ' '
+			elif i == limit:
+				p += q + '\n'
+			elif i > limit:
+				i = 0
+				p += q + ' '
+			i += 1
+		return p
 
 class RadioButtonGroup(QVBoxLayout):
 	def __init__(self, parent=None):
@@ -141,12 +158,15 @@ class UIMain(QWidget):
 		self.stack1 = defaultWindow()
 		self.stack2 = defaultWindow()
 		self.stack3 = defaultWindow()
+		self.stack4 = defaultWindow()
 
 		self.setupHomeUI()
-
 		self.QtStack.addWidget(self.stack0)
+		'''
 		self.QtStack.addWidget(self.stack1)
 		self.QtStack.addWidget(self.stack2)
+		self.QtStack.addWidget(self.stack3)
+		'''
 		
 	def setupHomeUI(self):
 		#Open database
@@ -240,6 +260,9 @@ class UIMain(QWidget):
 		hbox.addWidget(close_button)
 		hbox.addWidget(self.page1_next_button)
 
+		#Database close
+		conn.close()
+
 	def setupPage2UI(self):
 		#Database Connect
 		conn = sqlite3.connect('testdb')
@@ -285,6 +308,9 @@ class UIMain(QWidget):
 		hbox.addWidget(close_button)
 		hbox.addWidget(self.page2_next_button)
 
+		#Database close
+		conn.close()
+
 	def setupPage3UI(self):
 		#Database Connect
 		conn = sqlite3.connect('testdb')
@@ -329,3 +355,54 @@ class UIMain(QWidget):
 		hbox.addWidget(self.page3_back_button)
 		hbox.addWidget(close_button)
 		hbox.addWidget(self.page3_next_button)
+
+		#Database close
+		conn.close()
+
+	def setupPage4UI(self):
+		#Database Connect
+		conn = sqlite3.connect('testdb')
+
+		#Heading
+		label1 = Heading('Questionnaire')
+		self.stack4.layout.addWidget(label1)
+
+		#Description
+		a = conn.execute('SELECT name FROM Questions WHERE parent="' + self.selected_nation + '" AND q_number=4')
+		print("Changed nation to: " + self.selected_nation)
+		for i in a:
+			qn1 = str(i[0])
+		label2 = BodyText(qn1)
+		self.stack4.layout.addWidget(label2)
+
+		#Radio button selection
+		btn_gbox = QGroupBox('')
+		vbox = RadioButtonGroup()
+		btn_gbox.setLayout(vbox)
+		self.stack4.layout.addWidget(btn_gbox)
+		b = conn.execute('SELECT * FROM Options WHERE parent="' + self.selected_nation + '" AND q_number=4')
+		for i in b:
+			option1 = str(i[0])
+			self.radiobuttonQ4 = PPIRadioButton(option1)
+			self.radiobuttonQ4.figure = str(i[3])
+			self.radiobuttonQ4.toggled.connect(self.on_q4_toggle)
+			vbox.addWidget(self.radiobuttonQ4)
+		self.radiobuttonQ4.setChecked(True)
+
+		#Navigation buttons
+		nav_gbox = QGroupBox('')
+		hbox = QHBoxLayout()
+		nav_gbox.setLayout(hbox)
+
+		self.page4_back_button = navBtn('Back')
+		close_button = navBtn('Close')
+		close_button.clicked.connect(navBtn.click_close)
+		self.page4_next_button = navBtn('Next')
+		self.stack4.layout.addWidget(nav_gbox)
+		hbox.setSpacing(50)
+		hbox.addWidget(self.page4_back_button)
+		hbox.addWidget(close_button)
+		hbox.addWidget(self.page4_next_button)
+
+		#Database close
+		conn.close()

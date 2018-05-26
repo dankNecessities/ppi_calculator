@@ -12,6 +12,7 @@ class Window(QMainWindow, UIMain):
 		self.q1_answer = ''
 		self.q2_answer = ''
 		self.q3_answer = ''
+		self.q4_answer = ''
 		self.setupUI(self)
 		self.homepage_next_button.clicked.connect(self.openPage1UI)
 		self.n_combobox.activated[str].connect(self.on_menu_selection)
@@ -50,7 +51,23 @@ class Window(QMainWindow, UIMain):
 		self.QtStack.addWidget(self.stack3)
 		self.setupPage3UI()
 		self.page3_back_button.clicked.connect(self.openPage2UI)
+		self.page3_next_button.clicked.connect(self.openPage4UI)
 		self.QtStack.setCurrentWidget(self.stack3)
+
+	def openPage4UI(self):
+		print("Page 4")
+		#Remove and reinitialize old page
+		self.QtStack.removeWidget(self.stack4)
+		self.stack4 = defaultWindow()
+		self.QtStack.addWidget(self.stack4)
+		self.setupPage4UI()
+		self.page4_back_button.clicked.connect(self.openPage3UI)
+		self.QtStack.setCurrentWidget(self.stack4)
+
+	def on_menu_selection(self):
+		menuitem = self.sender()
+		self.selected_nation = menuitem.currentText()
+		print(self.selected_nation)
 
 	def on_q1_toggle(self):
 		radiobutton = self.sender()
@@ -73,10 +90,12 @@ class Window(QMainWindow, UIMain):
 			self.q3_answer = radiobutton.figure
 			print(self.q3_answer)
 
-	def on_menu_selection(self):
-		menuitem = self.sender()
-		self.selected_nation = menuitem.currentText()
-		print(self.selected_nation)
+	def on_q4_toggle(self):
+		radiobutton = self.sender()
+		if radiobutton.isChecked():
+			print('Question 4')
+			self.q4_answer = radiobutton.figure
+			print(self.q4_answer)
 
 if __name__ == '__main__':
 	app = QApplication(sys.argv)
