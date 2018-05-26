@@ -200,12 +200,20 @@ class SetupDatabase():
 		Questions.insert_item('Where are you?', 'Uganda', 1)
 		Questions.insert_item('What do you eat?', 'Uganda', 2)
 
+		Questions.insert_item('Kenyan locations', 'Kenya', 1)
+		Questions.insert_item('Kenyan Foods', 'Kenya', 2)
+
 		#Create a few Options, insert defaults
 		Options = wService('Options', name='text', parent='text', q_number='int')
 		Options.insert_item('Kampala', 'Uganda', 1)
 		Options.insert_item('Lira', 'Uganda', 1)
 		Options.insert_item('Matooke', 'Uganda', 2)
 		Options.insert_item('Malakwang', 'Uganda', 2)
+
+		Options.insert_item('Nairobi', 'Kenya', 1)
+		Options.insert_item('Mombasa', 'Kenya', 1)
+		Options.insert_item('Ugali', 'Kenya', 2)
+		Options.insert_item('Beans', 'Kenya', 2)
 
 		#Create Households Table
 		Households = wService('Households', score='real', ppi_index='int', parent='text')

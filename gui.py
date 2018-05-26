@@ -135,13 +135,11 @@ class UIMain(QWidget):
 		self.stack2 = defaultWindow()
 
 		self.setupHomeUI()
-		self.setupPage1UI()
 
 		self.QtStack.addWidget(self.stack1)
 		self.QtStack.addWidget(self.stack2)
 		
 	def setupHomeUI(self):
-		#self.setWindowTitle("Hello")
 		#Open database
 		conn = sqlite3.connect('testdb')
 
@@ -197,7 +195,8 @@ class UIMain(QWidget):
 		self.stack2.layout.addWidget(label1)
 
 		#Description
-		a = conn.execute('SELECT name FROM Questions WHERE parent="Uganda" AND q_number=1')
+		a = conn.execute('SELECT name FROM Questions WHERE parent="' + self.selected_nation + '" AND q_number=1')
+		print("Changed nation to: " + self.selected_nation)
 		for i in a:
 			qn1 = str(i[0])
 		label2 = BodyText(qn1)
@@ -208,7 +207,7 @@ class UIMain(QWidget):
 		vbox = QVBoxLayout()
 		btn_gbox.setLayout(vbox)
 		self.stack2.layout.addWidget(btn_gbox)
-		b = conn.execute('SELECT name FROM Options WHERE parent="Uganda" AND q_number=1')
+		b = conn.execute('SELECT name FROM Options WHERE parent="' + self.selected_nation + '" AND q_number=1')
 		for i in b:
 			option1 = str(i[0])
 			self.radiobutton1Q1 = RadioButtonQ1(option1)

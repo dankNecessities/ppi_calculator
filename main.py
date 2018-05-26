@@ -8,19 +8,24 @@ import sys
 class Window(QMainWindow, UIMain):
 	def __init__(self, parent=None):
 		super(Window, self).__init__(parent)
-		self.selected_nation = ''
+		self.selected_nation = 'Uganda'
 		self.setupUI(self)
 		self.page1_button.clicked.connect(self.openPage1UI)
-		self.page0_button.clicked.connect(self.openHomeUI)
 		self.n_combobox.activated[str].connect(self.on_menu_selection)
 
 	def openHomeUI(self):
 		print("Back")
-		self.QtStack.setCurrentIndex(0)
+		self.QtStack.setCurrentWidget(self.stack1)
 
 	def openPage1UI(self):
 		print("Next")
-		self.QtStack.setCurrentIndex(1)
+		#Remove and reinitialize old page
+		self.QtStack.removeWidget(self.stack2)
+		self.stack2 = defaultWindow()
+		self.QtStack.addWidget(self.stack2)
+		self.setupPage1UI()
+		self.page0_button.clicked.connect(self.openHomeUI)
+		self.QtStack.setCurrentWidget(self.stack2)
 
 	def on_q1_toggle(self):
 		radiobutton = self.sender()
