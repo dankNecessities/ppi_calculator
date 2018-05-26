@@ -159,6 +159,7 @@ class UIMain(QWidget):
 		self.stack2 = defaultWindow()
 		self.stack3 = defaultWindow()
 		self.stack4 = defaultWindow()
+		self.stack5 = defaultWindow()
 
 		self.setupHomeUI()
 		self.QtStack.addWidget(self.stack0)
@@ -403,6 +404,54 @@ class UIMain(QWidget):
 		hbox.addWidget(self.page4_back_button)
 		hbox.addWidget(close_button)
 		hbox.addWidget(self.page4_next_button)
+
+		#Database close
+		conn.close()
+
+	def setupPage5UI(self):
+		#Database Connect
+		conn = sqlite3.connect('testdb')
+
+		#Heading
+		label1 = Heading('Questionnaire')
+		self.stack5.layout.addWidget(label1)
+
+		#Description
+		a = conn.execute('SELECT name FROM Questions WHERE parent="' + self.selected_nation + '" AND q_number=5')
+		print("Changed nation to: " + self.selected_nation)
+		for i in a:
+			qn1 = str(i[0])
+		label2 = BodyText(qn1)
+		self.stack5.layout.addWidget(label2)
+
+		#Radio button selection
+		btn_gbox = QGroupBox('')
+		vbox = RadioButtonGroup()
+		btn_gbox.setLayout(vbox)
+		self.stack5.layout.addWidget(btn_gbox)
+		b = conn.execute('SELECT * FROM Options WHERE parent="' + self.selected_nation + '" AND q_number=5')
+		for i in b:
+			option1 = str(i[0])
+			self.radiobuttonQ5 = PPIRadioButton(option1)
+			self.radiobuttonQ5.figure = str(i[3])
+			self.radiobuttonQ5.toggled.connect(self.on_q5_toggle)
+			vbox.addWidget(self.radiobuttonQ5)
+		self.radiobuttonQ5.setChecked(True)
+
+		#Navigation buttons
+		nav_gbox = QGroupBox('')
+		hbox = QHBoxLayout()
+		nav_gbox.setLayout(hbox)
+
+		self.page5_back_button = navBtn('Back')
+		close_button = navBtn('Close')
+		close_button.clicked.connect(navBtn.click_close)
+		self.page5_next_button = navBtn('Next')
+		self.stack5.layout.addWidget(nav_gbox)
+		hbox.setSpacing(50)
+		hbox.addWidget(self.page5_back_button)
+		hbox.addWidget(close_button)
+		hbox.addWidget(self.page5_next_button)
 
 		#Database close
 		conn.close()

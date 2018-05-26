@@ -201,6 +201,7 @@ class SetupDatabase():
 		Questions.insert_item('2. Are all household members ages 6 to 12 currently in school?', 'Uganda', 2)
 		Questions.insert_item('3. Can the (oldest) female head/spouse read and write with understanding in any language?', 'Uganda', 3)
 		Questions.insert_item('4. What type of material is mainly used for construction of the wall of the dwelling?', 'Uganda', 4)
+		Questions.insert_item('5. What type of material is mainly used for construction of the roof of the dwelling?', 'Uganda', 5)
 
 		Questions.insert_item('Kenyan locations', 'Kenya', 1)
 		Questions.insert_item('Kenyan Foods', 'Kenya', 2)
@@ -229,6 +230,9 @@ class SetupDatabase():
 		Options.insert_item('Unburnt bricks with mud, mud and poles or other', 'Uganda', 4, 0)
 		Options.insert_item('Unburnt bricks with cement, wood, tin/iron sheets, concrete/stones, burnt stablilized bricks ' \
 			+ 'or cement blocks', 'Uganda', 4, 4)
+		#Question Five
+		Options.insert_item('Thatch or tins', 'Uganda', 5, 0)
+		Options.insert_item('Iron sheets, concrete, tiles, asbestos or other', 'Uganda', 5, 5)
 		'''
 		Options.insert_item('Matooke', 'Uganda', 2)
 		Options.insert_item('Malakwang', 'Uganda', 2)
