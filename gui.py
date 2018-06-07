@@ -100,6 +100,19 @@ class BodyText(QLabel):
 			''')
 		self.setWordWrap(True)
 
+class ResultText(QLabel):
+	def __init__(self, parent=None):
+		super(ResultText, self).__init__(parent)
+		self.setAlignment(Qt.AlignLeft)
+		self.setContentsMargins(30, 0, 0, 0)
+		self.setStyleSheet('''
+			font-size: 30px;
+			font-weight: bold;
+			font-family: "Sawasdee";
+			color: #FCFF00;
+			''')
+		self.setWordWrap(True)
+
 class PPIRadioButton(QRadioButton):
 	def __init__(self, parent=None):
 		super(PPIRadioButton, self).__init__(parent)
@@ -166,6 +179,8 @@ class UIMain(QWidget):
 		self.stack8 = defaultWindow()
 		self.stack9 = defaultWindow()
 		self.stack10 = defaultWindow()
+		self.stack11 = defaultWindow()
+		self.stack12 = defaultWindow()
 
 		self.setupHomeUI()
 		self.QtStack.addWidget(self.stack0)
@@ -227,7 +242,7 @@ class UIMain(QWidget):
 
 		#Description
 		a = conn.execute('SELECT name FROM Questions WHERE parent="' + self.selected_nation + '" AND q_number=' + str(q_number))
-		print("Changed nation to: " + self.selected_nation)
+		#print("Changed nation to: " + self.selected_nation)
 		for i in a:
 			qn1 = str(i[0])
 		label2 = BodyText(qn1)
@@ -262,4 +277,120 @@ class UIMain(QWidget):
 		hbox.addWidget(nextbtn)
 
 		#Database close
+		conn.close()
+
+	def setupResultPage(self):
+		#Connect Database
+		conn = sqlite3.connect('testdb')
+
+		#Heading
+		label1 = Heading("PPI Score")
+		self.stack11.layout.addWidget(label1)
+
+		#Description
+		label2 = Description("How the index is calculated")
+		label3 = BodyText("The PPI score is matched to a specific range depending on the selected nationality and percentile," \
+			+ " to get the final index.")
+		self.stack11.layout.addWidget(label2)
+		self.stack11.layout.addWidget(label3)
+
+		#Calculate PPI values
+		self.sum_ppi_scores()
+		self.get_ppi_index()
+
+		#Result Boxes
+		label4 = ResultText('Score: ' + str(self.ppi_score))
+		self.stack11.layout.addWidget(label4)
+
+		#Percentile Menu
+		label5 = BodyText("Please select a percentile")
+		self.stack11.layout.addWidget(label5)
+		nbox = QGroupBox('')
+		nhbox = QHBoxLayout()
+		nhbox.setContentsMargins(100, 0, 100, 0)
+		nbox.setLayout(nhbox)
+		
+		self.p_combobox = NationalityMenu(self)
+		self.p_combobox.addItem('One Hundred')
+		self.p_combobox.addItem('Two Hundred')
+		self.p_combobox.addItem('Three Hundred')
+		self.p_combobox.addItem('Poorest')
+		self.p_combobox.activated[str].connect(self.on_percentile_selection)
+		
+		nhbox.addWidget(self.p_combobox)
+		self.stack11.layout.addWidget(nbox)
+
+		#Navigation buttons
+		gbox = QGroupBox('')
+		hbox = QHBoxLayout()
+		gbox.setLayout(hbox)
+
+		close_button = navBtn("Close")
+		close_button.clicked.connect(navBtn.click_close)
+		backbtn = navBtn('Back')
+		backbtn.clicked.connect(self.openPage10UI)
+		nextbtn = navBtn('Next')
+		nextbtn.clicked.connect(self.openFinalPageUI)
+		self.stack11.layout.addWidget(gbox)
+		hbox.setSpacing(70)
+		hbox.addWidget(backbtn)
+		hbox.addWidget(close_button)
+		hbox.addWidget(nextbtn)
+
+		#Close database
+		conn.close()
+
+	def setupFinalPage(self):
+		#Heading
+		label1 = Heading("PPI Index")
+		self.stack12.layout.addWidget(label1)
+
+		#Description
+		label2 = Description("The Poverty Probability index")
+		label3 = BodyText("The PPI score is matched to a specific range depending on the selected nationality and percentile," \
+			+ " to get the final index.")
+		self.stack12.layout.addWidget(label2)
+		self.stack12.layout.addWidget(label3)
+
+		#Result Boxes
+		label4 = ResultText('Final index: ' + str(self.ppi_index))
+		self.stack12.layout.addWidget(label4)
+
+		#Navigation buttons
+		gbox = QGroupBox('')
+		hbox = QHBoxLayout()
+		gbox.setLayout(hbox)
+
+		close_button = navBtn("Close")
+		close_button.clicked.connect(navBtn.click_close)
+		backbtn = navBtn('Back')
+		backbtn.clicked.connect(self.openResultPageUI)
+		#nextbtn = navBtn('Next')
+		self.stack12.layout.addWidget(gbox)
+		hbox.setSpacing(150)
+		hbox.addWidget(backbtn)
+		hbox.addWidget(close_button)		
+
+	def sum_ppi_scores(self):
+		self.ppi_score = int(self.q1_answer) + int(self.q2_answer) + int(self.q3_answer) + int(self.q4_answer) + int(self.q5_answer)
+		self.ppi_score += int(self.q6_answer) + int(self.q7_answer) + int(self.q8_answer) + int(self.q9_answer) + int(self.q10_answer)
+
+	def get_ppi_index(self):
+		conn = sqlite3.connect('testdb')
+
+		if self.ppi_percentile == 'One Hundred':
+			perc = 'dOH'
+		elif self.ppi_percentile == 'Two Hundred':
+			perc = 'dTH'
+		elif self.ppi_percentile == 'Three Hundred':
+			perc = 'dThH'
+		elif self.ppi_percentile == 'Poorest':
+			perc = 'poorest'
+
+		res = conn.execute('SELECT ppi_range, ' + perc + ' FROM ' + self.selected_nation)
+
+		for row in res:
+			if 0 <= self.ppi_score - row[0] <= 4:
+				self.ppi_index = row[1]
+				print(self.ppi_index)
 		conn.close()

@@ -192,7 +192,7 @@ class SetupDatabase():
 
 		#Create default PPI Tables
 		default_ppi = lookupService('Uganda', ppi_range='int', dOH='real', dTH='real', dThH='real', poorest='real')
-		default_ppi = lookupService('Kenya', ppi_range='int', dOH='real', dTH='real', dThH='real', poorest='real')
+		#default_ppi = lookupService('Kenya', ppi_range='int', dOH='real', dTH='real', dThH='real', poorest='real')
 		default_ppi.load_spreadsheet_values('testPPIv2.xlsx')
 
 		#Create Questions Table, insert default Questions

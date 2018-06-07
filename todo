@@ -1,6 +1,11 @@
 TODO
+-Admin page button on home page
+-Administrative page
 -Limit question creation to 10 questions
+-Delete and insert Question and options functionality
+-Upload from spreadsheet functionality for every service
 DONE
+-Calculate PPI page
 -Check whether default answers are enforced
 -Template for questionnaire
 	Stack, questionnumber, radiobuttonfunction, backbutton, nextbutton

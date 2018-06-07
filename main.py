@@ -19,12 +19,15 @@ class Window(QMainWindow, UIMain):
 		self.q8_answer = ''
 		self.q9_answer = ''
 		self.q10_answer = ''
+		self.ppi_score = ''
+		self.ppi_percentile = 'One Hundred'		
+		self.ppi_index = ''
 		self.setupUI(self)
 		self.homepage_next_button.clicked.connect(self.openPage1UI)
 		self.n_combobox.activated[str].connect(self.on_menu_selection)
 
 	def openHomeUI(self):
-		print("Back")
+		print("Home")
 		self.QtStack.setCurrentWidget(self.stack0)
 
 	def openPage1UI(self):
@@ -191,16 +194,42 @@ class Window(QMainWindow, UIMain):
 		backbtn = navBtn('Back')
 		nextbtn = navBtn('Next')
 		backbtn.clicked.connect(self.openPage9UI)
-		#nextbtn.clicked.connect(self.openPage9UI)
+		nextbtn.clicked.connect(self.openResultPageUI)
 
 		#Generate page from template
 		self.setupQuestionnairePage(self.stack10, 10, self.on_q10_toggle, backbtn, nextbtn)
 		self.QtStack.setCurrentWidget(self.stack10)
 
+	def openResultPageUI(self):
+		print('Result Page')
+		self.QtStack.removeWidget(self.stack11)
+		self.stack11 = defaultWindow()
+		self.QtStack.addWidget(self.stack11)
+
+		#Template generation
+		self.setupResultPage()
+		self.QtStack.setCurrentWidget(self.stack11)
+
+	def openFinalPageUI(self):
+		print('Final Page')
+		self.QtStack.removeWidget(self.stack12)
+		self.stack12 = defaultWindow()
+		self.QtStack.addWidget(self.stack12)
+
+		#Template generation
+		self.setupFinalPage()
+		self.QtStack.setCurrentWidget(self.stack12)
+
 	def on_menu_selection(self):
 		menuitem = self.sender()
 		self.selected_nation = menuitem.currentText()
 		print(self.selected_nation)
+
+	def on_percentile_selection(self):
+		perc = self.sender()
+		self.ppi_percentile = perc.currentText()
+		print(self.ppi_percentile)
+		self.get_ppi_index()
 
 	def on_q1_toggle(self):
 		radiobutton = self.sender()
