@@ -104,12 +104,16 @@ class wService():
 		else:
 			print("Number of specified args does not match")
 
-	def delete_item(self, item):
+	def delete_item(self, **kwargs):
 		conn = sqlite3.connect('testdb')
+		delete_statement = ''
+		for q in kwargs:
+			delete_statement += str(q) + '="' + str(kwargs[q]) + '" AND '
+		delete_statement = delete_statement[:-4]
 		try:
-			conn.execute('DELETE FROM ' + str(self.entity_name) + ' WHERE ' + 'name="' + str(item) +  '";')
+			conn.execute('DELETE FROM ' + str(self.entity_name) + ' WHERE ' + delete_statement +  ';')
 			conn.commit()
-			print("Item :" + str(item) + " deleted")
+			print(str(q) + " :" + str(kwargs[q]) + " deleted")
 		except sqlite3.OperationalError as e:
 			print(e)
 

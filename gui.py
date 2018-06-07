@@ -63,6 +63,124 @@ class navBtn(QPushButton):
 	def click_close(self):
 		sys.exit()
 
+class adminBtn(QPushButton):
+	def __init__(self, parent=None):
+		super(adminBtn, self).__init__(parent)
+		self.setFlat(True)
+		self.setMinimumSize(90, 30)
+		self.setMaximumSize(90, 30)
+		self.setStyleSheet('''
+			border-width: 2px 2px 2px 2px;
+			border-style: solid;
+			font-weight: bold;
+			font-family: "Sawasdee";
+			border-color: #ED1F0F;
+			color: #ED1F0F;
+			font-size: 15px;
+			''')
+
+	def enterEvent(self, QEvent):
+		self.setStyleSheet('''
+			background-color: #ED1F0F;
+			border-width: 2px 2px 2px 2px;
+			border-style: solid;
+			font-weight: bold;
+			font-family: "Sawasdee";
+			border-color: #ED1F0F;
+			color: #FFFFFF;
+			font-size: 15px;
+			''')
+
+	def leaveEvent(self, QEvent):
+		self.setStyleSheet('''
+			border-width: 2px 2px 2px 2px;
+			border-style: solid;
+			font-weight: bold;
+			font-family: "Sawasdee";
+			border-color: #ED1F0F;
+			color: #ED1F0F;
+			font-size: 15px;
+			''')		
+
+class uploadBtn(QPushButton):
+	def __init__(self, parent=None):
+		super(uploadBtn, self).__init__(parent)
+		self.setFlat(True)
+		self.setMinimumSize(90, 30)
+		self.setMaximumSize(90, 30)
+		self.setStyleSheet('''
+			border-width: 2px 2px 2px 2px;
+			border-style: solid;
+			font-weight: bold;
+			font-family: "Sawasdee";
+			border-color: #F3F61C;
+			color: #F3F61C;
+			font-size: 15px;
+			''')
+
+	def enterEvent(self, QEvent):
+		self.setStyleSheet('''
+			background-color: #F3F61C;
+			border-width: 2px 2px 2px 2px;
+			border-style: solid;
+			font-weight: bold;
+			font-family: "Sawasdee";
+			border-color: #F3F61C;
+			color: #000000;
+			font-size: 15px;
+			''')
+
+	def leaveEvent(self, QEvent):
+		self.setStyleSheet('''
+			border-width: 2px 2px 2px 2px;
+			border-style: solid;
+			font-weight: bold;
+			font-family: "Sawasdee";
+			border-color: #F3F61C;
+			color: #F3F61C;
+			font-size: 15px;
+			''')
+
+class adminInput(QLineEdit):
+	
+	def __init__(self, parent=None):
+		super(adminInput, self).__init__(parent)
+		self.setAlignment(Qt.AlignCenter)
+		self.setContentsMargins(60, 0, 60, 0)
+		self.setStyleSheet('''
+			border-width: 0px 0px 2px 0px;
+			border-style: solid;
+			border-color: #ED1F0F;
+			color: white;
+			font-size: 15px;
+			font-family: "Sawasdee";
+			text-align: center;
+			''')	
+
+	def enterEvent(self, QEvent):
+		self.setContentsMargins(40, 0, 40, 0)
+		self.setStyleSheet('''
+			border-width: 0px 0px 2px 0px;
+			border-style: solid;
+			border-color: #E55A4F;
+			color: white;
+			font-size: 15px;
+			font-family: "Sawasdee";
+			text-align: center;
+			''')
+
+	def leaveEvent(self, QEvent):
+		self.setContentsMargins(60, 0, 60, 0)
+		self.setStyleSheet('''
+			border-width: 0px 0px 2px 0px;
+			border-style: solid;
+			border-color: #ED1F0F;
+			color: white;
+			font-size: 15px;
+			font-family: "Sawasdee";
+			text-align: center;
+			''')
+
 class Heading(QLabel):
 
 	def __init__(self, parent=None):
@@ -181,6 +299,7 @@ class UIMain(QWidget):
 		self.stack10 = defaultWindow()
 		self.stack11 = defaultWindow()
 		self.stack12 = defaultWindow()
+		self.stack13 = defaultWindow()
 
 		self.setupHomeUI()
 		self.QtStack.addWidget(self.stack0)
@@ -216,6 +335,20 @@ class UIMain(QWidget):
 		nhbox.addWidget(self.n_combobox)
 		self.stack0.layout.addWidget(nbox)
 
+		#Upload from spreadsheet
+		udbox = QGroupBox('')
+		udvbox = QVBoxLayout()
+		udbox.setLayout(udvbox)
+
+		label5 = BodyText("Or: ")
+		label5.setContentsMargins(20, 0, 0, 0)
+		upload_button = uploadBtn('Upload')
+		udvbox.setAlignment(Qt.AlignCenter)
+		udvbox.addWidget(label5)
+		udvbox.addWidget(upload_button)
+
+		self.stack0.layout.addWidget(udbox)
+
 		#Navigation buttons
 		gbox = QGroupBox('')
 		hbox = QHBoxLayout()
@@ -223,10 +356,13 @@ class UIMain(QWidget):
 
 		close_button = navBtn("Close")
 		close_button.clicked.connect(navBtn.click_close)
+		admin_button = adminBtn("Admin")
+		admin_button.clicked.connect(self.openAdminPageUI)
 		self.homepage_next_button = navBtn("Next")
 		self.stack0.layout.addWidget(gbox)
-		hbox.setSpacing(150)
+		hbox.setSpacing(70)
 		hbox.addWidget(close_button)
+		hbox.addWidget(admin_button)
 		hbox.addWidget(self.homepage_next_button)
 
 		#Close database
@@ -371,6 +507,64 @@ class UIMain(QWidget):
 		hbox.addWidget(backbtn)
 		hbox.addWidget(close_button)		
 
+	def setupAdminPage(self):
+		#Heading
+		label1 = Heading("Administration")
+		self.stack13.layout.addWidget(label1)
+
+		#Description
+		label3 = BodyText("Create, modify and delete questions and responses for selected countries")
+		self.stack13.layout.addWidget(label3)
+
+		#Replace question
+		label4 = BodyText("Please select a Question")
+		self.stack13.layout.addWidget(label4)
+
+		nbox = QGroupBox('')
+		nhbox = QHBoxLayout()
+		nhbox.setContentsMargins(100, 0, 100, 0)
+		nbox.setLayout(nhbox)
+		
+		self.u_combobox = NationalityMenu(self)
+		self.u_combobox.addItem('One')
+		self.u_combobox.addItem('Two')
+		self.u_combobox.addItem('Three')
+		self.u_combobox.addItem('Four')
+		self.u_combobox.addItem('Five')
+		self.u_combobox.addItem('Six')
+		self.u_combobox.addItem('Seven')
+		self.u_combobox.addItem('Eight')
+		self.u_combobox.addItem('Nine')
+		self.u_combobox.addItem('Ten')
+		self.u_combobox.activated[str].connect(self.on_question_selection)
+		
+		nhbox.addWidget(self.u_combobox)
+		self.stack13.layout.addWidget(nbox)
+
+		#Question text
+		label5 = BodyText("Please type the new question text")
+		self.stack13.layout.addWidget(label5)
+
+		self.insert_question = adminInput()
+		self.stack13.layout.addWidget(self.insert_question)
+
+		#Navigation buttons
+		gbox = QGroupBox('')
+		hbox = QHBoxLayout()
+		gbox.setLayout(hbox)
+
+		backbtn = navBtn('Back')
+		backbtn.clicked.connect(self.openHomeUI)
+		updatebtn = adminBtn('Update')
+		updatebtn.clicked.connect(self.replace_question)
+		nextbtn = navBtn('Next')
+		#nextbtn.clicked.connect(self.openHomeUI)
+		self.stack13.layout.addWidget(gbox)
+		hbox.setSpacing(70)
+		hbox.addWidget(backbtn)
+		hbox.addWidget(updatebtn)
+		hbox.addWidget(nextbtn)
+
 	def sum_ppi_scores(self):
 		self.ppi_score = int(self.q1_answer) + int(self.q2_answer) + int(self.q3_answer) + int(self.q4_answer) + int(self.q5_answer)
 		self.ppi_score += int(self.q6_answer) + int(self.q7_answer) + int(self.q8_answer) + int(self.q9_answer) + int(self.q10_answer)
@@ -394,3 +588,4 @@ class UIMain(QWidget):
 				self.ppi_index = row[1]
 				print(self.ppi_index)
 		conn.close()
+		

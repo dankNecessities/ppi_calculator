@@ -22,6 +22,7 @@ class Window(QMainWindow, UIMain):
 		self.ppi_score = ''
 		self.ppi_percentile = 'One Hundred'		
 		self.ppi_index = ''
+		self.update_number = 1
 		self.setupUI(self)
 		self.homepage_next_button.clicked.connect(self.openPage1UI)
 		self.n_combobox.activated[str].connect(self.on_menu_selection)
@@ -220,6 +221,17 @@ class Window(QMainWindow, UIMain):
 		self.setupFinalPage()
 		self.QtStack.setCurrentWidget(self.stack12)
 
+	def openAdminPageUI(self):
+		print("Admin Page")
+		#Remove and reinitialize old page
+		self.QtStack.removeWidget(self.stack13)
+		self.stack13 = defaultWindow()
+		self.QtStack.addWidget(self.stack13)		
+
+		#Template generation
+		self.setupAdminPage()
+		self.QtStack.setCurrentWidget(self.stack13)
+
 	def on_menu_selection(self):
 		menuitem = self.sender()
 		self.selected_nation = menuitem.currentText()
@@ -230,6 +242,45 @@ class Window(QMainWindow, UIMain):
 		self.ppi_percentile = perc.currentText()
 		print(self.ppi_percentile)
 		self.get_ppi_index()
+
+	def on_question_selection(self):
+		qn = self.sender()
+		qid = qn.currentText()
+		if qid == "One":
+			self.update_number = 1
+		elif qid == "Two":
+			self.update_number = 2
+		elif qid == "Three":
+			self.update_number = 3
+		elif qid == "Four":
+			self.update_number = 4
+		elif qid == "Five":
+			self.update_number = 5
+		elif qid == "Six":
+			self.update_number = 6
+		elif qid == "Seven":
+			self.update_number = 7
+		elif qid == "Eight":
+			self.update_number = 8
+		elif qid == "Nine":
+			self.update_number = 9
+		elif qid == "Ten":
+			self.update_number = 10
+
+	def replace_question(self):
+		update_qn = self.insert_question.text()
+		if len(update_qn) < 1:
+			self.insert_question.setText("TOO SHORT!")	
+		elif update_qn == 'TOO SHORT!':
+			self.insert_question.setText("")	
+		elif update_qn == 'SUCCESS!':
+			self.insert_question.setText("")
+		else:
+			self.insert_question.setText("")
+			qns = wService('Questions')
+			qns.delete_item(parent=self.selected_nation, q_number=self.update_number)
+			qns.insert_item(update_qn, self.selected_nation, self.update_number)
+			self.insert_question.setText("SUCCESS!")
 
 	def on_q1_toggle(self):
 		radiobutton = self.sender()
