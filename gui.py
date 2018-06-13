@@ -9,7 +9,7 @@ import sys, sqlite3, re
 class defaultWindow(QWidget):
 	def __init__(self, parent=None):
 		super(defaultWindow, self).__init__(parent)
-		self.setWindowTitle("Kamya's PPI Calculator")
+		self.setWindowTitle("Kamya's Poverty Index Calculator")
 		self.setObjectName('defWindow')
 		self.resize(500, 600)
 		self.setStyleSheet('''
@@ -301,6 +301,7 @@ class UIMain(QWidget):
 		self.stack12 = defaultWindow()
 		self.stack13 = defaultWindow()
 		self.stack14 = defaultWindow()
+		self.stack15 = defaultWindow()
 
 		self.setupHomeUI()
 		self.QtStack.addWidget(self.stack0)
@@ -344,6 +345,7 @@ class UIMain(QWidget):
 		label5 = BodyText("Or: ")
 		label5.setContentsMargins(20, 0, 0, 0)
 		upload_button = uploadBtn('Upload')
+		upload_button.clicked.connect(self.openUploadPageUI)
 		udvbox.setAlignment(Qt.AlignCenter)
 		udvbox.addWidget(label5)
 		udvbox.addWidget(upload_button)
@@ -359,12 +361,13 @@ class UIMain(QWidget):
 		close_button.clicked.connect(navBtn.click_close)
 		admin_button = adminBtn("Admin")
 		admin_button.clicked.connect(self.openAdminPage1UI)
-		self.homepage_next_button = navBtn("Next")
+		homepage_next_button = navBtn("Next")
+		homepage_next_button.clicked.connect(self.openPage1UI)
 		self.stack0.layout.addWidget(gbox)
 		hbox.setSpacing(70)
 		hbox.addWidget(close_button)
 		hbox.addWidget(admin_button)
-		hbox.addWidget(self.homepage_next_button)
+		hbox.addWidget(homepage_next_button)
 
 		#Close database
 		conn.close()
@@ -627,6 +630,51 @@ class UIMain(QWidget):
 		hbox.addWidget(updatebtn)
 		hbox.addWidget(nextbtn)
 
+	def setupUploadPageUI(self):
+		conn = sqlite3.connect('testdb')
+
+		#Heading
+		label1 = Heading("Administration")
+		self.stack15.layout.addWidget(label1)
+
+		#Select File
+		label3 = BodyText("Select file from which to upload Poverty index reference table")
+		self.stack15.layout.addWidget(label3)
+		
+		fbox = QGroupBox('')
+		fgbox = QHBoxLayout()
+		fgbox.setSpacing(10)
+		fbox.setLayout(fgbox)
+
+		self.file_select = adminInput()
+		upload = uploadBtn('Upload')
+		upload.clicked.connect(self.openDialog)
+		fgbox.addWidget(self.file_select)
+		fgbox.addWidget(upload)
+
+		self.stack15.layout.addWidget(fbox)
+
+		#Name file
+		label5 = BodyText("Please name the table, using its country identifier")
+		self.stack15.layout.addWidget(label5)
+
+		self.new_ppi_name = adminInput()
+		self.stack15.layout.addWidget(self.new_ppi_name)
+
+		#Navigation buttons
+		gbox = QGroupBox('')
+		hbox = QHBoxLayout()
+		gbox.setLayout(hbox)
+
+		backbtn = navBtn('Back')
+		backbtn.clicked.connect(self.openHomeUI)
+		updatebtn = adminBtn('Save')
+		updatebtn.clicked.connect(self.add_new_ppi_table)
+		self.stack15.layout.addWidget(gbox)
+		hbox.setSpacing(70)
+		hbox.addWidget(backbtn)
+		hbox.addWidget(updatebtn)
+
 	def sum_ppi_scores(self):
 		self.ppi_score = int(self.q1_answer) + int(self.q2_answer) + int(self.q3_answer) + int(self.q4_answer) + int(self.q5_answer)
 		self.ppi_score += int(self.q6_answer) + int(self.q7_answer) + int(self.q8_answer) + int(self.q9_answer) + int(self.q10_answer)
@@ -656,3 +704,13 @@ class UIMain(QWidget):
 		index.insert_item(self.ppi_score, self.ppi_index, self.selected_nation)
 		conn.close()
 		
+
+	def openDialog(self):
+		self.file_select.setText("")
+		options = QFileDialog.Options()
+		options |= QFileDialog.DontUseNativeDialog
+		fileName, _ = QFileDialog.getOpenFileName(self, "QFileDialog.getOpenFileName()", "", "All Files (*) ;;Spreadsheet Files (*.xlsx, *.xls)", options=options)
+		if fileName:
+			print(fileName)
+			self.file_input = fileName
+			self.file_select.setText(self.file_input)

@@ -99,6 +99,7 @@ class wService():
 				conn.commit()
 			except sqlite3.OperationalError as e:
 				print("Insert failed!")
+				print(insert_statement)
 				print(e)		
 			conn.close()
 		else:

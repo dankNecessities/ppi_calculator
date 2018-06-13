@@ -25,11 +25,17 @@ class Window(QMainWindow, UIMain):
 		self.update_number = 1
 		self.update_option = ''
 		self.setupUI(self)
-		self.homepage_next_button.clicked.connect(self.openPage1UI)
 		self.n_combobox.activated[str].connect(self.on_menu_selection)
 
 	def openHomeUI(self):
 		print("Home")
+		#Remove and reinitialize old page
+		self.QtStack.removeWidget(self.stack0)
+		self.stack0 = defaultWindow()
+		self.QtStack.addWidget(self.stack0)
+
+		#Template generation
+		self.setupHomeUI()
 		self.QtStack.setCurrentWidget(self.stack0)
 
 	def openPage1UI(self):
@@ -244,6 +250,17 @@ class Window(QMainWindow, UIMain):
 		self.setupAdminPage2()
 		self.QtStack.setCurrentWidget(self.stack14)		
 
+	def openUploadPageUI(self):
+		print("Upload Page")
+		#Remove and reinitialize old page
+		self.QtStack.removeWidget(self.stack15)
+		self.stack15 = defaultWindow()
+		self.QtStack.addWidget(self.stack15)		
+
+		#Template generation
+		self.setupUploadPageUI()
+		self.QtStack.setCurrentWidget(self.stack15)				
+
 	def on_menu_selection(self):
 		menuitem = self.sender()
 		self.selected_nation = menuitem.currentText()
@@ -327,6 +344,11 @@ class Window(QMainWindow, UIMain):
 				qns.insert_item(update_qn, self.selected_nation, self.update_number, update_val)
 				self.insert_option.setText("SUCCESS!")
 				self.insert_option_val.setText("SUCCESS!")
+
+	def add_new_ppi_table(self):
+		new_ppi = lookupService(self.new_ppi_name.text(), ppi_range='int', dOH='real', dTH='real', dThH='real', poorest='real')
+		new_ppi.load_spreadsheet_values(self.file_select.text())
+		self.new_ppi_name.setText("SUCCESS")
 
 	def on_q1_toggle(self):
 		radiobutton = self.sender()
