@@ -23,6 +23,7 @@ class Window(QMainWindow, UIMain):
 		self.ppi_percentile = 'One Hundred'		
 		self.ppi_index = ''
 		self.update_number = 1
+		self.update_option = ''
 		self.setupUI(self)
 		self.homepage_next_button.clicked.connect(self.openPage1UI)
 		self.n_combobox.activated[str].connect(self.on_menu_selection)
@@ -221,16 +222,27 @@ class Window(QMainWindow, UIMain):
 		self.setupFinalPage()
 		self.QtStack.setCurrentWidget(self.stack12)
 
-	def openAdminPageUI(self):
-		print("Admin Page")
+	def openAdminPage1UI(self):
+		print("Admin Page 1")
 		#Remove and reinitialize old page
 		self.QtStack.removeWidget(self.stack13)
 		self.stack13 = defaultWindow()
 		self.QtStack.addWidget(self.stack13)		
 
 		#Template generation
-		self.setupAdminPage()
+		self.setupAdminPage1()
 		self.QtStack.setCurrentWidget(self.stack13)
+
+	def openAdminPage2UI(self):
+		print("Admin Page 2")
+		#Remove and reinitialize old page
+		self.QtStack.removeWidget(self.stack14)
+		self.stack14 = defaultWindow()
+		self.QtStack.addWidget(self.stack14)		
+
+		#Template generation
+		self.setupAdminPage2()
+		self.QtStack.setCurrentWidget(self.stack14)		
 
 	def on_menu_selection(self):
 		menuitem = self.sender()
@@ -267,6 +279,10 @@ class Window(QMainWindow, UIMain):
 		elif qid == "Ten":
 			self.update_number = 10
 
+	def on_option_selection(self):
+		opn = self.sender()
+		self.update_option = opn.currentText()
+
 	def replace_question(self):
 		update_qn = self.insert_question.text()
 		if len(update_qn) < 1:
@@ -281,6 +297,36 @@ class Window(QMainWindow, UIMain):
 			qns.delete_item(parent=self.selected_nation, q_number=self.update_number)
 			qns.insert_item(update_qn, self.selected_nation, self.update_number)
 			self.insert_question.setText("SUCCESS!")
+
+	def replace_option(self):
+		update_qn = self.insert_option.text()
+		update_val = self.insert_option_val.text()
+		if len(update_qn) < 1:
+			self.insert_question.setText("TOO SHORT!")	
+		elif update_qn == 'TOO SHORT!':
+			self.insert_question.setText("")
+		elif update_qn == 'SUCCESS!':
+			self.insert_question.setText("")
+		else:
+			qns = wService('Options')
+			print(self.update_option)
+			if self.update_option == 'New Option':
+				self.insert_option.setText("")
+				self.insert_option_val.setText("")
+				qns.insert_item(update_qn, self.selected_nation, self.update_number, update_val)
+				self.insert_option.setText("SUCCESS!")
+			elif update_qn == '0':
+				self.insert_option.setText("")
+				self.insert_option_val.setText("")
+				qns.delete_item(name=self.update_option, parent=self.selected_nation, q_number=self.update_number)
+				self.insert_option.setText("DELETED!")
+			else:
+				self.insert_option.setText("")
+				self.insert_option_val.setText("")
+				qns.delete_item(name=self.update_option, parent=self.selected_nation, q_number=self.update_number)
+				qns.insert_item(update_qn, self.selected_nation, self.update_number, update_val)
+				self.insert_option.setText("SUCCESS!")
+				self.insert_option_val.setText("SUCCESS!")
 
 	def on_q1_toggle(self):
 		radiobutton = self.sender()

@@ -1,10 +1,13 @@
 TODO
 -Condense similar GUI classes
 -Key Press animation
--Update options 
 -Upload from spreadsheet
+-View database values
 -Upload from spreadsheet functionality for every service
 DONE
+-Save results to database
+-Delete options
+-Update options 
 -Resolve locked database error
 -Update Question 
 -Administrative page

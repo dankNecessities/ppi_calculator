@@ -300,6 +300,7 @@ class UIMain(QWidget):
 		self.stack11 = defaultWindow()
 		self.stack12 = defaultWindow()
 		self.stack13 = defaultWindow()
+		self.stack14 = defaultWindow()
 
 		self.setupHomeUI()
 		self.QtStack.addWidget(self.stack0)
@@ -357,7 +358,7 @@ class UIMain(QWidget):
 		close_button = navBtn("Close")
 		close_button.clicked.connect(navBtn.click_close)
 		admin_button = adminBtn("Admin")
-		admin_button.clicked.connect(self.openAdminPageUI)
+		admin_button.clicked.connect(self.openAdminPage1UI)
 		self.homepage_next_button = navBtn("Next")
 		self.stack0.layout.addWidget(gbox)
 		hbox.setSpacing(70)
@@ -507,13 +508,13 @@ class UIMain(QWidget):
 		hbox.addWidget(backbtn)
 		hbox.addWidget(close_button)		
 
-	def setupAdminPage(self):
+	def setupAdminPage1(self):
 		#Heading
 		label1 = Heading("Administration")
 		self.stack13.layout.addWidget(label1)
 
 		#Description
-		label3 = BodyText("Create, modify and delete questions and responses for selected countries")
+		label3 = BodyText("Create, modify and delete questions for selected countries")
 		self.stack13.layout.addWidget(label3)
 
 		#Replace question
@@ -558,8 +559,69 @@ class UIMain(QWidget):
 		updatebtn = adminBtn('Update')
 		updatebtn.clicked.connect(self.replace_question)
 		nextbtn = navBtn('Next')
-		#nextbtn.clicked.connect(self.openHomeUI)
+		nextbtn.clicked.connect(self.openAdminPage2UI)
 		self.stack13.layout.addWidget(gbox)
+		hbox.setSpacing(70)
+		hbox.addWidget(backbtn)
+		hbox.addWidget(updatebtn)
+		hbox.addWidget(nextbtn)
+
+	def setupAdminPage2(self):
+		conn = sqlite3.connect('testdb')
+
+		#Heading
+		label1 = Heading("Administration")
+		self.stack14.layout.addWidget(label1)
+
+		#Description
+		label3 = BodyText("Create, modify and delete response options for selected countries")
+		self.stack14.layout.addWidget(label3)
+
+		#Select Option
+		label5 = BodyText("Please select an Option")
+		self.stack14.layout.addWidget(label5)
+
+		obox = QGroupBox('')
+		ohbox = QHBoxLayout()
+		ohbox.setContentsMargins(100, 0, 100, 0)
+		obox.setLayout(ohbox)
+		
+		self.u2_combobox = NationalityMenu(self)
+		self.u2_combobox.addItem('New Option')
+
+		res = conn.execute('SELECT * FROM OPTIONS WHERE q_number=' + str(self.update_number) + ' AND parent="' + self.selected_nation + '";')
+		for i in res:
+			self.u2_combobox.addItem(i[0])
+		self.u2_combobox.activated[str].connect(self.on_option_selection)
+		
+		ohbox.addWidget(self.u2_combobox)
+		self.stack14.layout.addWidget(obox)		
+
+		#Option text
+		label6 = BodyText("Please type the new option text (0 to delete)")
+		self.stack14.layout.addWidget(label6)
+
+		self.insert_option = adminInput()
+		self.stack14.layout.addWidget(self.insert_option)
+
+		label7 = BodyText("Please type the new option value (integer)")
+		self.stack14.layout.addWidget(label7)
+
+		self.insert_option_val = adminInput()
+		self.stack14.layout.addWidget(self.insert_option_val)
+
+		#Navigation buttons
+		gbox = QGroupBox('')
+		hbox = QHBoxLayout()
+		gbox.setLayout(hbox)
+
+		backbtn = navBtn('Back')
+		backbtn.clicked.connect(self.openAdminPage1UI)
+		updatebtn = adminBtn('Update')
+		updatebtn.clicked.connect(self.replace_option)
+		nextbtn = navBtn('Home')
+		nextbtn.clicked.connect(self.openHomeUI)
+		self.stack14.layout.addWidget(gbox)
 		hbox.setSpacing(70)
 		hbox.addWidget(backbtn)
 		hbox.addWidget(updatebtn)
@@ -586,6 +648,11 @@ class UIMain(QWidget):
 		for row in res:
 			if 0 <= self.ppi_score - row[0] <= 4:
 				self.ppi_index = row[1]
-				print(self.ppi_index)
+
+		res.close()
+		
+		print(self.ppi_index)
+		index = wService('Households')
+		index.insert_item(self.ppi_score, self.ppi_index, self.selected_nation)
 		conn.close()
 		
