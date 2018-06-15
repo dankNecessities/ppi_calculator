@@ -302,6 +302,7 @@ class UIMain(QWidget):
 		self.stack13 = defaultWindow()
 		self.stack14 = defaultWindow()
 		self.stack15 = defaultWindow()
+		self.stack16 = defaultWindow()
 
 		self.setupHomeUI()
 		self.QtStack.addWidget(self.stack0)
@@ -505,11 +506,13 @@ class UIMain(QWidget):
 		close_button.clicked.connect(navBtn.click_close)
 		backbtn = navBtn('Back')
 		backbtn.clicked.connect(self.openResultPageUI)
-		#nextbtn = navBtn('Next')
+		nextbtn = navBtn('Next')
+		nextbtn.clicked.connect(self.openViewPageUI)
 		self.stack12.layout.addWidget(gbox)
 		hbox.setSpacing(150)
 		hbox.addWidget(backbtn)
 		hbox.addWidget(close_button)		
+		hbox.addWidget(nextbtn)
 
 	def setupAdminPage1(self):
 		#Heading
@@ -675,6 +678,63 @@ class UIMain(QWidget):
 		hbox.addWidget(backbtn)
 		hbox.addWidget(updatebtn)
 
+	def setupViewPageUI(self):
+		#Heading
+		label1 = Heading("Comparison")
+		self.stack16.layout.addWidget(label1)
+
+		#Description
+		label2 = BodyText("The Poverty Probability index compared by country")
+		self.stack16.layout.addWidget(label2)
+
+		#Result Boxes
+		stats = QGroupBox('')
+		stat_box = QHBoxLayout()
+		stat_box.setSpacing(70)
+		stats.setLayout(stat_box)
+
+		stat_names = QGroupBox('')
+		stat_name_box = QVBoxLayout()
+		stat_name_box.setSpacing(70)
+		stat_names.setLayout(stat_name_box)
+		stat_box.addWidget(stat_names)
+
+		stat_values = QGroupBox('')
+		stat_value_box = QVBoxLayout()
+		stat_value_box.setSpacing(70)
+		stat_values.setLayout(stat_value_box)
+		stat_box.addWidget(stat_values)
+
+		self.stack16.layout.addWidget(stats)
+
+		stat_name_box.addWidget(BodyText('Country'))
+		stat_value_box.addWidget(BodyText('Values'))
+
+		results = self.getHouseholdAverages()
+
+		for i in results:
+			stat_country = i
+			stat_value = results[i]
+			stat_name_box.addWidget(BodyText(str(stat_country)))
+			stat_value_box.addWidget(BodyText(str(stat_value)))
+
+		#Navigation buttons
+		gbox = QGroupBox('')
+		hbox = QHBoxLayout()
+		gbox.setLayout(hbox)
+
+		close_button = navBtn("Close")
+		close_button.clicked.connect(navBtn.click_close)
+		homebtn = navBtn('Home')
+		homebtn.clicked.connect(self.openHomeUI)
+		backbtn = navBtn('Back')
+		backbtn.clicked.connect(self.openResultPageUI)
+		self.stack16.layout.addWidget(gbox)
+		hbox.setSpacing(70)
+		hbox.addWidget(backbtn)
+		hbox.addWidget(homebtn)
+		hbox.addWidget(close_button)
+
 	def sum_ppi_scores(self):
 		self.ppi_score = int(self.q1_answer) + int(self.q2_answer) + int(self.q3_answer) + int(self.q4_answer) + int(self.q5_answer)
 		self.ppi_score += int(self.q6_answer) + int(self.q7_answer) + int(self.q8_answer) + int(self.q9_answer) + int(self.q10_answer)
@@ -704,7 +764,6 @@ class UIMain(QWidget):
 		index.insert_item(self.ppi_score, self.ppi_index, self.selected_nation)
 		conn.close()
 		
-
 	def openDialog(self):
 		self.file_select.setText("")
 		options = QFileDialog.Options()
@@ -714,3 +773,32 @@ class UIMain(QWidget):
 			print(fileName)
 			self.file_input = fileName
 			self.file_select.setText(self.file_input)
+
+	def getHouseholdAverages(self):
+		conn = sqlite3.connect('testdb')
+		res = conn.execute('SELECT * FROM NATIONALITIES')
+		res2 = conn.execute('SELECT * FROM households')
+		result_dict = {}
+		for i in res:
+			temp_list = []
+			for j in res2:
+				if j[2] == i[0]:
+					temp_list.append(int(j[1]))
+			result_dict[i[0]] = temp_list
+		averages_dict = {}
+		for i in result_dict:
+			avg = self.getAvgFromList(result_dict[i])
+			averages_dict[i] = avg
+
+		return averages_dict
+
+	def getAvgFromList(self, some_list):
+		n = len(some_list)
+		sum = 0
+		for item in some_list:
+			sum += item
+		if n != 0:
+			average = sum/n
+		else:
+			average = 0
+		return average

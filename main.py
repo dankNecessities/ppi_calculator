@@ -228,6 +228,17 @@ class Window(QMainWindow, UIMain):
 		self.setupFinalPage()
 		self.QtStack.setCurrentWidget(self.stack12)
 
+	def openViewPageUI(self):
+		print('View Page')
+		#Remove and reinitialize old page
+		self.QtStack.removeWidget(self.stack16)
+		self.stack16 = defaultWindow()
+		self.QtStack.addWidget(self.stack16)
+
+		#Template generation
+		self.setupViewPageUI()
+		self.QtStack.setCurrentWidget(self.stack16)
+
 	def openAdminPage1UI(self):
 		print("Admin Page 1")
 		#Remove and reinitialize old page
@@ -259,7 +270,7 @@ class Window(QMainWindow, UIMain):
 
 		#Template generation
 		self.setupUploadPageUI()
-		self.QtStack.setCurrentWidget(self.stack15)				
+		self.QtStack.setCurrentWidget(self.stack15)						
 
 	def on_menu_selection(self):
 		menuitem = self.sender()

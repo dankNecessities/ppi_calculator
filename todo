@@ -1,9 +1,9 @@
 TODO
 -Condense similar GUI classes
 -Key Press animation
--View database values
 -Upload from spreadsheet functionality for every service
 DONE
+-View database values
 -Upload from spreadsheet
 -Save results to database
 -Delete options
