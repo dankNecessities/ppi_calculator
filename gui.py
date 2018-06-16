@@ -494,7 +494,7 @@ class UIMain(QWidget):
 		self.stack12.layout.addWidget(label3)
 
 		#Result Boxes
-		label4 = ResultText('Final index: ' + str(self.ppi_index))
+		label4 = ResultText('Final index: ' + str(self.perc))
 		self.stack12.layout.addWidget(label4)
 
 		#Navigation buttons
@@ -684,7 +684,7 @@ class UIMain(QWidget):
 		self.stack16.layout.addWidget(label1)
 
 		#Description
-		label2 = BodyText("The Poverty Probability index compared by country")
+		label2 = BodyText("The Poverty Probability index averages compared by country")
 		self.stack16.layout.addWidget(label2)
 
 		#Result Boxes
@@ -742,33 +742,46 @@ class UIMain(QWidget):
 	def get_ppi_index(self):
 		conn = sqlite3.connect('testdb')
 
-		if self.ppi_percentile == 'One Hundred':
-			perc = 'dOH'
-		elif self.ppi_percentile == 'Two Hundred':
-			perc = 'dTH'
-		elif self.ppi_percentile == 'Three Hundred':
-			perc = 'dThH'
-		elif self.ppi_percentile == 'Poorest':
-			perc = 'poorest'
+		#res = conn.execute('SELECT ppi_range, ' + perc + ' FROM ' + self.selected_nation)
+		res = conn.execute('SELECT * FROM ' + self.selected_nation)
 
-		res = conn.execute('SELECT ppi_range, ' + perc + ' FROM ' + self.selected_nation)
+		if self.ppi_score == 0:
+			self.ppi_score = 4
+		elif self.ppi_score == 100:
+			self.ppi_score = 99
 
 		for row in res:
 			if 0 <= self.ppi_score - row[0] <= 4:
-				self.ppi_index = row[1]
+				ppi_index_one = row[1]
+				ppi_index_two = row[2]
+				ppi_index_three = row[3]
+				ppi_index_four = row[4]
+
+		if self.ppi_percentile == 'One Hundred':
+			self.perc = ppi_index_one
+			self.perc_val = 1
+		elif self.ppi_percentile == 'Two Hundred':
+			self.perc = ppi_index_two
+			self.perc_val = 2
+		elif self.ppi_percentile == 'Three Hundred':
+			self.perc = ppi_index_three
+			self.perc_val = 3
+		elif self.ppi_percentile == 'Poorest':
+			self.perc = ppi_index_four
+			self.perc_val = 4
 
 		res.close()
 		
-		print(self.ppi_index)
 		index = wService('Households')
-		index.insert_item(self.ppi_score, self.ppi_index, self.selected_nation)
+		index.insert_item(self.ppi_score, ppi_index_one, ppi_index_two, ppi_index_three, ppi_index_four, self.selected_nation)
 		conn.close()
 		
 	def openDialog(self):
 		self.file_select.setText("")
 		options = QFileDialog.Options()
 		options |= QFileDialog.DontUseNativeDialog
-		fileName, _ = QFileDialog.getOpenFileName(self, "QFileDialog.getOpenFileName()", "", "All Files (*) ;;Spreadsheet Files (*.xlsx, *.xls)", options=options)
+		fileName, _ = QFileDialog.getOpenFileName(self, "QFileDialog.getOpenFileName()", "",
+		"All Files (*) ;;Spreadsheet Files (*.xlsx, *.xls)", options=options)
 		if fileName:
 			print(fileName)
 			self.file_input = fileName
@@ -782,9 +795,10 @@ class UIMain(QWidget):
 		for i in res:
 			temp_list = []
 			for j in res2:
-				if j[2] == i[0]:
-					temp_list.append(int(j[1]))
+				if j[5] == i[0]:
+					temp_list.append(int(j[self.perc_val]))
 			result_dict[i[0]] = temp_list
+			print(temp_list)
 		averages_dict = {}
 		for i in result_dict:
 			avg = self.getAvgFromList(result_dict[i])

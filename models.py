@@ -273,7 +273,7 @@ class SetupDatabase():
 		Options.insert_item('Beans', 'Kenya', 2)
 		'''
 		#Create Households Table
-		Households = wService('Households', score='real', ppi_index='int', parent='text')
+		Households = wService('Households', p_score='real', q_1='int', q_2='int', q_3='int', q_4='int', q_5='text')
 
 class setup():
 	def __init__(self):
