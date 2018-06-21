@@ -7,19 +7,32 @@ from models import *
 import sys, sqlite3, re
 
 class defaultWindow(QWidget):
+	width = 500
+	height = 600
+
 	def __init__(self, parent=None):
 		super(defaultWindow, self).__init__(parent)
 		self.setWindowTitle("Kamya's Poverty Index Calculator")
+		self.setWindowIcon(QIcon("ppicon.png"))
 		self.setObjectName('defWindow')
-		self.resize(500, 600)
+		self.resize(self.width, self.height)
 		self.setStyleSheet('''
-					border-style: none;
-					background-color: #101E41;
+			border-style: none;
+			background-color: #101E41;
 			''')
 		self.layout = QVBoxLayout()
 		self.layout.setContentsMargins(5, 5, 5, 5)
 		self.layout.setSpacing(0)
 		self.setLayout(self.layout)
+		self.center_window()
+
+	def center_window(self):
+		screen = QDesktopWidget()
+		screen_width = screen.width()
+		screen_height = screen.height()
+		h_pos = (screen_width - self.width)	/ 2
+		v_pos = (screen_height - self.height) / 2
+		self.move(h_pos,v_pos)
 
 class navBtn(QPushButton):
 	def __init__(self, parent=None):

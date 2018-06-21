@@ -433,5 +433,9 @@ class Window(QMainWindow, UIMain):
 
 if __name__ == '__main__':
 	app = QApplication(sys.argv)
+	splash = QSplashScreen(QPixmap("./targaryen_dragon.png"))
+	splash.show()
+
 	s = Window()
+	splash.finish(s)
 	sys.exit(app.exec_())
