@@ -7,15 +7,12 @@ from models import *
 import sys, sqlite3, re
 
 class defaultWindow(QWidget):
-	width = 500
-	height = 600
-
 	def __init__(self, parent=None):
 		super(defaultWindow, self).__init__(parent)
 		self.setWindowTitle("Kamya's Poverty Index Calculator")
-		self.setWindowIcon(QIcon("ppicon.png"))
+		self.setWindowIcon(QIcon('ppicon.png'))
 		self.setObjectName('defWindow')
-		self.resize(self.width, self.height)
+		self.resize(500, 600)
 		self.setStyleSheet('''
 			border-style: none;
 			background-color: #101E41;
@@ -24,15 +21,6 @@ class defaultWindow(QWidget):
 		self.layout.setContentsMargins(5, 5, 5, 5)
 		self.layout.setSpacing(0)
 		self.setLayout(self.layout)
-		self.center_window()
-
-	def center_window(self):
-		screen = QDesktopWidget()
-		screen_width = screen.width()
-		screen_height = screen.height()
-		h_pos = (screen_width - self.width)	/ 2
-		v_pos = (screen_height - self.height) / 2
-		self.move(h_pos,v_pos)
 
 class navBtn(QPushButton):
 	def __init__(self, parent=None):
@@ -44,7 +32,7 @@ class navBtn(QPushButton):
 			border-width: 2px 2px 2px 2px;
 			border-style: solid;
 			font-weight: bold;
-			font-family: "Sawasdee";
+			font-family: "Cambria";
 			border-color: #20AE70;
 			color: #20AE70;
 			font-size: 15px;
@@ -56,7 +44,7 @@ class navBtn(QPushButton):
 			border-width: 2px 2px 2px 2px;
 			border-style: solid;
 			font-weight: bold;
-			font-family: "Sawasdee";
+			font-family: "Cambria";
 			border-color: #20AE70;
 			color: #FFFFFF;
 			font-size: 15px;
@@ -67,7 +55,7 @@ class navBtn(QPushButton):
 			border-width: 2px 2px 2px 2px;
 			border-style: solid;
 			font-weight: bold;
-			font-family: "Sawasdee";
+			font-family: "Cambria";
 			border-color: #20AE70;
 			color: #20AE70;
 			font-size: 15px;
@@ -86,7 +74,7 @@ class adminBtn(QPushButton):
 			border-width: 2px 2px 2px 2px;
 			border-style: solid;
 			font-weight: bold;
-			font-family: "Sawasdee";
+			font-family: "Cambria";
 			border-color: #ED1F0F;
 			color: #ED1F0F;
 			font-size: 15px;
@@ -98,7 +86,7 @@ class adminBtn(QPushButton):
 			border-width: 2px 2px 2px 2px;
 			border-style: solid;
 			font-weight: bold;
-			font-family: "Sawasdee";
+			font-family: "Cambria";
 			border-color: #ED1F0F;
 			color: #FFFFFF;
 			font-size: 15px;
@@ -109,7 +97,7 @@ class adminBtn(QPushButton):
 			border-width: 2px 2px 2px 2px;
 			border-style: solid;
 			font-weight: bold;
-			font-family: "Sawasdee";
+			font-family: "Cambria";
 			border-color: #ED1F0F;
 			color: #ED1F0F;
 			font-size: 15px;
@@ -125,7 +113,7 @@ class uploadBtn(QPushButton):
 			border-width: 2px 2px 2px 2px;
 			border-style: solid;
 			font-weight: bold;
-			font-family: "Sawasdee";
+			font-family: "Cambria";
 			border-color: #F3F61C;
 			color: #F3F61C;
 			font-size: 15px;
@@ -137,7 +125,7 @@ class uploadBtn(QPushButton):
 			border-width: 2px 2px 2px 2px;
 			border-style: solid;
 			font-weight: bold;
-			font-family: "Sawasdee";
+			font-family: "Cambria";
 			border-color: #F3F61C;
 			color: #000000;
 			font-size: 15px;
@@ -148,7 +136,7 @@ class uploadBtn(QPushButton):
 			border-width: 2px 2px 2px 2px;
 			border-style: solid;
 			font-weight: bold;
-			font-family: "Sawasdee";
+			font-family: "Cambria";
 			border-color: #F3F61C;
 			color: #F3F61C;
 			font-size: 15px;
@@ -166,7 +154,7 @@ class adminInput(QLineEdit):
 			border-color: #ED1F0F;
 			color: white;
 			font-size: 15px;
-			font-family: "Sawasdee";
+			font-family: "Cambria";
 			text-align: center;
 			''')	
 
@@ -178,7 +166,7 @@ class adminInput(QLineEdit):
 			border-color: #E55A4F;
 			color: white;
 			font-size: 15px;
-			font-family: "Sawasdee";
+			font-family: "Cambria";
 			text-align: center;
 			''')
 
@@ -190,7 +178,7 @@ class adminInput(QLineEdit):
 			border-color: #ED1F0F;
 			color: white;
 			font-size: 15px;
-			font-family: "Sawasdee";
+			font-family: "Cambria";
 			text-align: center;
 			''')
 
@@ -202,7 +190,7 @@ class Heading(QLabel):
 		self.setStyleSheet('''
 			color: white;
 			font-size: 55px;
-			font-family: "Sawasdee";
+			font-family: "Cambria";
 			text-align: center;
 			''')
 
@@ -214,7 +202,7 @@ class Description(QLabel):
 		self.setStyleSheet('''
 			font-size: 30px;
 			font-weight: bold;
-			font-family: "Sawasdee";
+			font-family: "Cambria";
 			color: #7CB7EF;
 			''')
 
@@ -226,20 +214,33 @@ class BodyText(QLabel):
 		self.setStyleSheet('''
 			font-size: 15px;
 			font-weight: bold;
-			font-family: "Sawasdee";
+			font-family: "Cambria";
 			color: #7CB7EF;
+			''')
+		self.setWordWrap(True)
+
+class FieldText(QLabel):
+	def __init__(self, parent=None):
+		super(FieldText, self).__init__(parent)
+		self.setAlignment(Qt.AlignCenter)
+		self.setContentsMargins(30, 0, 0, 0)
+		self.setStyleSheet('''
+			font-size: 15px;
+			font-weight: bold;
+			font-family: "Cambria";
+			color: #AAD1F4;
 			''')
 		self.setWordWrap(True)
 
 class ResultText(QLabel):
 	def __init__(self, parent=None):
 		super(ResultText, self).__init__(parent)
-		self.setAlignment(Qt.AlignLeft)
+		self.setAlignment(Qt.AlignCenter)
 		self.setContentsMargins(30, 0, 0, 0)
 		self.setStyleSheet('''
 			font-size: 30px;
 			font-weight: bold;
-			font-family: "Sawasdee";
+			font-family: "Cambria";
 			color: #FCFF00;
 			''')
 		self.setWordWrap(True)
@@ -250,7 +251,7 @@ class PPIRadioButton(QRadioButton):
 		self.setStyleSheet('''
 			font-size: 15px;
 			font-weight: bold;
-			font-family: "Sawasdee";
+			font-family: "Cambria";
 			color: #FFBF35;
 			''')
 		self.setText(self.wrapText(self.text(), 7))
@@ -286,7 +287,7 @@ class NationalityMenu(QComboBox):
 				border-width: 2px 2px 2px 2px;
 				border-style: solid;
 				font-weight: bold;
-				font-family: "Sawasdee";
+				font-family: "Cambria";
 				border-color: #FFFFFF;
 				color: #FFFFFF;
 				font-size: 15px;
@@ -316,6 +317,8 @@ class UIMain(QWidget):
 		self.stack14 = defaultWindow()
 		self.stack15 = defaultWindow()
 		self.stack16 = defaultWindow()
+		self.stack17 = defaultWindow()
+		self.stack18 =  defaultWindow()
 
 		self.setupHomeUI()
 		self.QtStack.addWidget(self.stack0)
@@ -351,19 +354,18 @@ class UIMain(QWidget):
 		nhbox.addWidget(self.n_combobox)
 		self.stack0.layout.addWidget(nbox)
 
-		#Upload from spreadsheet
+		#temp-> View results
+		label5 = BodyText("View results")
+		self.stack0.layout.addWidget(label5)
+
 		udbox = QGroupBox('')
-		udvbox = QVBoxLayout()
-		udbox.setLayout(udvbox)
+		udhbox = QHBoxLayout()
+		udbox.setLayout(udhbox)
 
-		label5 = BodyText("Or: ")
-		label5.setContentsMargins(20, 0, 0, 0)
-		upload_button = uploadBtn('Upload')
-		upload_button.clicked.connect(self.openUploadPageUI)
-		udvbox.setAlignment(Qt.AlignCenter)
-		udvbox.addWidget(label5)
-		udvbox.addWidget(upload_button)
-
+		upload_button = uploadBtn('Results')
+		upload_button.clicked.connect(self.openViewPageUI)
+		udhbox.setAlignment(Qt.AlignCenter)
+		udhbox.addWidget(upload_button)
 		self.stack0.layout.addWidget(udbox)
 
 		#Navigation buttons
@@ -374,9 +376,9 @@ class UIMain(QWidget):
 		close_button = navBtn("Close")
 		close_button.clicked.connect(navBtn.click_close)
 		admin_button = adminBtn("Admin")
-		admin_button.clicked.connect(self.openAdminPage1UI)
+		admin_button.clicked.connect(self.gotoLogin)
 		homepage_next_button = navBtn("Next")
-		homepage_next_button.clicked.connect(self.openPage1UI)
+		homepage_next_button.clicked.connect(self.openBusinessPage)
 		self.stack0.layout.addWidget(gbox)
 		hbox.setSpacing(70)
 		hbox.addWidget(close_button)
@@ -384,6 +386,74 @@ class UIMain(QWidget):
 		hbox.addWidget(homepage_next_button)
 
 		#Close database
+		conn.close()
+
+	def setupBusinessPage(self):
+		#Heading
+		label1 = Heading("Business Name")
+		self.stack18.layout.addWidget(label1)
+
+		#Description
+		label2 = BodyText("Create a business name below, or select one from the drop down list. Please note " \
+			"that created businesses must be selected from the menu before continuing.")
+		self.stack18.layout.addWidget(label2)
+
+		#Business name menu
+		nbox = QGroupBox('')
+		nhbox = QHBoxLayout()
+		nhbox.setContentsMargins(100, 0, 100, 0)
+		nbox.setLayout(nhbox)
+
+		conn = sqlite3.connect('testdb')
+		
+		self.biz_combobox = NationalityMenu(self)
+		nats = conn.execute('SELECT NAME FROM BUSINESSES;')
+		for i in nats:
+			self.biz_combobox.addItem(i[0])
+		
+		self.biz_combobox.activated[str].connect(self.on_business_selection)
+		nhbox.addWidget(self.biz_combobox)
+		self.stack18.layout.addWidget(nbox)
+
+		#Create business name box
+		biz_box = QGroupBox()
+		bizv_box = QVBoxLayout()
+		biz_box.setLayout(bizv_box)
+
+		biz = BodyText('New business name: ')
+		self.business_name = adminInput()
+		bizv_box.addWidget(biz)
+		bizv_box.addWidget(self.business_name)
+		self.stack18.layout.addWidget(biz_box)
+		
+		udbox = QGroupBox('')
+		udhbox = QHBoxLayout()
+		udbox.setLayout(udhbox)
+
+		upload_button = uploadBtn('Create')
+		upload_button.clicked.connect(self.createBusiness)
+		udhbox.setAlignment(Qt.AlignCenter)
+		udhbox.addWidget(upload_button)
+		self.stack18.layout.addWidget(udbox)
+
+		#Navigation buttons
+		nav_gbox = QGroupBox('')
+		hbox = QHBoxLayout()
+		nav_gbox.setLayout(hbox)
+
+		backbtn = navBtn('Back')
+		closebtn = navBtn('Close')
+		nextbtn = navBtn('Next')
+		backbtn.clicked.connect(self.openHomeUI)
+		closebtn.clicked.connect(navBtn.click_close)
+		nextbtn.clicked.connect(self.openPage1UI)
+
+		self.stack18.layout.addWidget(nav_gbox)
+		hbox.setSpacing(50)
+		hbox.addWidget(backbtn)
+		hbox.addWidget(closebtn)
+		hbox.addWidget(nextbtn)
+
 		conn.close()
 
 	def setupQuestionnairePage(self, stack, q_number, rbtn_function, backbtn, nextbtn):
@@ -496,18 +566,18 @@ class UIMain(QWidget):
 
 	def setupFinalPage(self):
 		#Heading
-		label1 = Heading("PPI Index")
+		label1 = Heading("Poverty Rate")
 		self.stack12.layout.addWidget(label1)
 
 		#Description
-		label2 = Description("The Poverty Probability index")
-		label3 = BodyText("The PPI score is matched to a specific range depending on the selected nationality and percentile," \
-			+ " to get the final index.")
+		label2 = Description("The Weighted Average Poverty Rate")
+		label3 = BodyText("The PPI score is matched to a specific range depending on the selected nationality and" \
+			" percentile, to get the poverty rate.")
 		self.stack12.layout.addWidget(label2)
 		self.stack12.layout.addWidget(label3)
 
 		#Result Boxes
-		label4 = ResultText('Final index: ' + str(self.perc))
+		label4 = ResultText('Poverty rate: ' + str(self.perc))
 		self.stack12.layout.addWidget(label4)
 
 		#Navigation buttons
@@ -527,17 +597,85 @@ class UIMain(QWidget):
 		hbox.addWidget(close_button)		
 		hbox.addWidget(nextbtn)
 
+	def setupLogin(self):
+		#Heading
+		label1 = Heading("Administration")
+		self.stack17.layout.addWidget(label1)
+
+		#Description
+		label3 = BodyText("Please enter your login credentials.")
+		self.stack17.layout.addWidget(label3)
+
+		#Login box
+		#Username
+		lbox1 = QGroupBox('')
+		lhbox1 = QHBoxLayout()
+		lbox1.setLayout(lhbox1)
+		username = BodyText("Username: ")
+		self.adminUser = adminInput()
+		lhbox1.addWidget(username)
+		lhbox1.addWidget(self.adminUser)
+
+		#Password
+		lbox2 = QGroupBox('')
+		lhbox2 = QHBoxLayout()
+		lbox2.setLayout(lhbox2)
+		key = BodyText("Password: ")
+		self.adminKey = adminInput()
+		lhbox2.addWidget(key)
+		lhbox2.addWidget(self.adminKey)
+
+		lboxv = QGroupBox('')
+		lvbox = QVBoxLayout()
+		lboxv.setLayout(lvbox)
+
+		#Error
+		self.loginerror = BodyText("")
+		
+		lvbox.addWidget(lbox1)
+		lvbox.addWidget(lbox2)
+		lvbox.addWidget(self.loginerror)
+		self.stack17.layout.addWidget(lboxv)
+
+		#Navigation buttons
+		gbox = QGroupBox('')
+		hbox = QHBoxLayout()
+		gbox.setLayout(hbox)
+
+		backbtn = navBtn('Back')
+		backbtn.clicked.connect(self.openHomeUI)
+		nextbtn = navBtn('Login')
+		nextbtn.clicked.connect(self.verifyLogin)
+		self.stack17.layout.addWidget(gbox)
+		hbox.setSpacing(70)
+		hbox.addWidget(backbtn)
+		hbox.addWidget(nextbtn)
+
 	def setupAdminPage1(self):
 		#Heading
 		label1 = Heading("Administration")
 		self.stack13.layout.addWidget(label1)
 
 		#Description
-		label3 = BodyText("Create, modify and delete questions for selected countries")
+		label3 = BodyText("Create, modify and delete questions for selected countries.")
 		self.stack13.layout.addWidget(label3)
 
+		#Upload from spreadsheet
+		label5 = BodyText("Upload country from spreadsheet: ")
+		self.stack13.layout.addWidget(label5)
+
+		udbox = QGroupBox('')
+		udhbox = QHBoxLayout()
+		udbox.setLayout(udhbox)
+
+		upload_button = uploadBtn('Upload')
+		upload_button.clicked.connect(self.openUploadPageUI)
+		udhbox.setAlignment(Qt.AlignCenter)
+		udhbox.addWidget(upload_button)
+		self.stack13.layout.addWidget(udbox)
+
 		#Replace question
-		label4 = BodyText("Please select a Question")
+		label4 = BodyText("Please select a Question to modify.")
 		self.stack13.layout.addWidget(label4)
 
 		nbox = QGroupBox('')
@@ -573,7 +711,7 @@ class UIMain(QWidget):
 		hbox = QHBoxLayout()
 		gbox.setLayout(hbox)
 
-		backbtn = navBtn('Back')
+		backbtn = navBtn('Logout')
 		backbtn.clicked.connect(self.openHomeUI)
 		updatebtn = adminBtn('Update')
 		updatebtn.clicked.connect(self.replace_question)
@@ -697,39 +835,108 @@ class UIMain(QWidget):
 		self.stack16.layout.addWidget(label1)
 
 		#Description
-		label2 = BodyText("The Poverty Probability index averages compared by country")
+		label2 = ResultText("Poverty Rates by business")
 		self.stack16.layout.addWidget(label2)
 
 		#Result Boxes
 		stats = QGroupBox('')
 		stat_box = QHBoxLayout()
-		stat_box.setSpacing(70)
+		stat_box.setSpacing(10)
 		stats.setLayout(stat_box)
 
+		spacing = 30
 		stat_names = QGroupBox('')
 		stat_name_box = QVBoxLayout()
-		stat_name_box.setSpacing(70)
+		stat_name_box.setSpacing(spacing)
 		stat_names.setLayout(stat_name_box)
 		stat_box.addWidget(stat_names)
 
-		stat_values = QGroupBox('')
-		stat_value_box = QVBoxLayout()
-		stat_value_box.setSpacing(70)
-		stat_values.setLayout(stat_value_box)
-		stat_box.addWidget(stat_values)
+		stat_values1 = QGroupBox('')
+		stat_value_box1 = QVBoxLayout()
+		stat_value_box1.setSpacing(spacing)
+		stat_values1.setLayout(stat_value_box1)
+		stat_box.addWidget(stat_values1)
+
+		stat_values2 = QGroupBox('')
+		stat_value_box2 = QVBoxLayout()
+		stat_value_box2.setSpacing(spacing)
+		stat_values2.setLayout(stat_value_box2)
+		stat_box.addWidget(stat_values2)
+
+		stat_values3 = QGroupBox('')
+		stat_value_box3 = QVBoxLayout()
+		stat_value_box3.setSpacing(spacing)
+		stat_values3.setLayout(stat_value_box3)
+		stat_box.addWidget(stat_values3)
+
+		stat_values4 = QGroupBox('')
+		stat_value_box4 = QVBoxLayout()
+		stat_value_box4.setSpacing(spacing)
+		stat_values4.setLayout(stat_value_box4)
+		stat_box.addWidget(stat_values4)
+
+		stat_values5 = QGroupBox('')
+		stat_value_box5 = QVBoxLayout()
+		stat_value_box5.setSpacing(spacing)
+		stat_values5.setLayout(stat_value_box5)
+		stat_box.addWidget(stat_values5)
 
 		self.stack16.layout.addWidget(stats)
 
-		stat_name_box.addWidget(BodyText('Country'))
-		stat_value_box.addWidget(BodyText('Values'))
+		stat_name_box.addWidget(FieldText('Business'))
+		stat_value_box1.addWidget(FieldText('PPI '))
+		stat_value_box2.addWidget(FieldText('1% '))
+		stat_value_box3.addWidget(FieldText('2% '))
+		stat_value_box4.addWidget(FieldText('3% '))
+		stat_value_box5.addWidget(FieldText('4% '))
 
 		results = self.getHouseholdAverages()
 
 		for i in results:
-			stat_country = i
-			stat_value = results[i]
-			stat_name_box.addWidget(BodyText(str(stat_country)))
-			stat_value_box.addWidget(BodyText(str(stat_value)))
+			stat_business = i
+			stat_name_box.addWidget(BodyText(str(stat_business)))
+			stat_value_box1.addWidget(BodyText(str(results[i][0])))
+			stat_value_box2.addWidget(BodyText(str(results[i][1])))
+			stat_value_box3.addWidget(BodyText(str(results[i][2])))
+			stat_value_box4.addWidget(BodyText(str(results[i][3])))
+			stat_value_box5.addWidget(BodyText(str(results[i][4])))
+
+		#Final weighted average poverty rate
+		avg = self.getTotalAverage()
+		label4 = ResultText('Weighted Average Poverty Rate')
+		
+		avgBox = QGroupBox('')
+		avgVBox = QVBoxLayout()
+		avgBox.setLayout(avgVBox)
+		avgVBox.setSpacing(10)
+
+		avgBox2 = QGroupBox('')
+		avgHBox1 = QHBoxLayout()
+		avgBox2.setLayout(avgHBox1)
+		avgHBox1.addWidget(FieldText('Score'))
+		avgHBox1.addWidget(FieldText('1% '))
+		avgHBox1.addWidget(FieldText('2% '))
+		avgHBox1.addWidget(FieldText('3% '))
+		avgHBox1.addWidget(FieldText('4% '))
+
+		avgBox3 = QGroupBox('')
+		avgHBox2 = QHBoxLayout()
+		avgBox3.setLayout(avgHBox2)
+		try:
+			avgHBox2.addWidget(BodyText(str(avg[0])))
+			avgHBox2.addWidget(BodyText(str(avg[1])))
+			avgHBox2.addWidget(BodyText(str(avg[2])))
+			avgHBox2.addWidget(BodyText(str(avg[3])))
+			avgHBox2.addWidget(BodyText(str(avg[4])))
+		except IndexError as e:
+			pass
+		
+
+		avgVBox.addWidget(avgBox2)
+		avgVBox.addWidget(avgBox3)
+
+		self.stack16.layout.addWidget(label4)
+		self.stack16.layout.addWidget(avgBox)
 
 		#Navigation buttons
 		gbox = QGroupBox('')
@@ -755,7 +962,6 @@ class UIMain(QWidget):
 	def get_ppi_index(self):
 		conn = sqlite3.connect('testdb')
 
-		#res = conn.execute('SELECT ppi_range, ' + perc + ' FROM ' + self.selected_nation)
 		res = conn.execute('SELECT * FROM ' + self.selected_nation)
 
 		if self.ppi_score == 0:
@@ -786,7 +992,8 @@ class UIMain(QWidget):
 		res.close()
 		
 		index = wService('Households')
-		index.insert_item(self.ppi_score, ppi_index_one, ppi_index_two, ppi_index_three, ppi_index_four, self.selected_nation)
+		index.insert_item(self.selected_business, self.ppi_score, ppi_index_one, ppi_index_two, ppi_index_three, \
+		 ppi_index_four, self.selected_nation)
 		conn.close()
 		
 	def openDialog(self):
@@ -802,22 +1009,63 @@ class UIMain(QWidget):
 
 	def getHouseholdAverages(self):
 		conn = sqlite3.connect('testdb')
-		res = conn.execute('SELECT * FROM NATIONALITIES')
+		res = conn.execute('SELECT * FROM BUSINESSES')
 		res2 = conn.execute('SELECT * FROM households')
 		result_dict = {}
-		for i in res:
-			temp_list = []
-			for j in res2:
-				if j[5] == i[0]:
-					temp_list.append(int(j[self.perc_val]))
-			result_dict[i[0]] = temp_list
-			print(temp_list)
-		averages_dict = {}
-		for i in result_dict:
-			avg = self.getAvgFromList(result_dict[i])
-			averages_dict[i] = avg
 
-		return averages_dict
+		#Transfer to stable memory
+		temp_list = []
+		temp_list2 = []
+		
+		for i in res:
+			temp_list.append(i)
+
+		for i in res2:
+			temp_list2.append(i)
+
+		for i in temp_list:
+			buff_list = []
+			for j in temp_list2:
+				if j[0] == i[0]:
+					buff_list.append([j[1], j[2], j[3], j[4], j[5]])
+			result_dict[i[0]] = buff_list
+		
+		print(result_dict)
+		
+		trans_dict = {}
+		for i in result_dict:
+			trans_dict[i] = []
+			list1 = []
+			list2 = []
+			list3 = []
+			list4 = []
+			list5 = []
+			for j in result_dict[i]:
+				list1.append(j[0])
+				list2.append(j[1])
+				list3.append(j[2])
+				list4.append(j[3])
+				list5.append(j[4])
+			trans_dict[i].append(list1)
+			trans_dict[i].append(list2)
+			trans_dict[i].append(list3)
+			trans_dict[i].append(list4)
+			trans_dict[i].append(list5)
+
+		biz_weighted_no = 0
+		final_dict = {}
+		for i in trans_dict:
+			final_dict[i] = []
+			for j in trans_dict[i]:
+				final_avg = self.getAvgFromList(j)
+				final_dict[i].append(round(final_avg, 2))
+			
+			biz_no = len(trans_dict[i][0])
+			biz_weighted_no += biz_no * final_avg
+
+		print(final_dict)
+		conn.close()
+		return final_dict
 
 	def getAvgFromList(self, some_list):
 		n = len(some_list)
@@ -829,3 +1077,46 @@ class UIMain(QWidget):
 		else:
 			average = 0
 		return average
+
+	def getTotalAverage(self):
+		conn = sqlite3.connect('testdb')
+		res = conn.execute('SELECT * FROM BUSINESSES')
+		res2 = conn.execute('SELECT * FROM households')
+
+		sum1 = 0
+		sum2 = 0
+		sum3 = 0
+		sum4 = 0
+		sum5 = 0
+		for j in res2:
+			sum1 += round(j[1], 2)
+			sum2 += round(j[2], 2)
+			sum3 += round(j[3], 2)
+			sum4 += round(j[4], 2)
+			sum5 += round(j[5], 2)
+		
+		sum_list = [sum1, sum2, sum3, sum4, sum5]
+
+		res3 = conn.execute('SELECT * FROM households')
+		b_len = 0
+		for i in res:
+			n = 0
+			for j in res3:
+				if j[0] == i[0] and n == 0:
+					print("here")
+					b_len += len(j)
+					n = 1
+			
+		print(b_len)
+		avg_list = []
+		for k in sum_list:
+			try:
+				avg_list.append(round((k/b_len), 2))
+			except ZeroDivisionError as e:
+				pass
+			
+
+		conn.close()
+
+		return avg_list
+		

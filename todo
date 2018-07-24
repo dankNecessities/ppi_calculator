@@ -1,10 +1,20 @@
 TODO
+-Hidden error field for change question
+
 -Condense similar GUI classes
 -Key Press animation
 -Upload from spreadsheet functionality for every service
 DONE
--Centered window
--Added splash screen
+-View results
+-Show weighted average instead 
+	-weighted average per business
+	-weighted average total
+-Household submits business name on complete
+-Modify PPI Index to Poverty Rate
+-Add business identifier page before questionnaire
+-Add business name to household
+-Put upload button within admin panel
+-Create login page for admin
 -Upload each percentile percentage to households
 -Sort views by percentile
 -View database values
