@@ -232,6 +232,19 @@ class FieldText(QLabel):
 			''')
 		self.setWordWrap(True)
 
+class CellText(QLabel):
+	def __init__(self, parent=None):
+		super(CellText, self).__init__(parent)
+		self.setAlignment(Qt.AlignCenter)
+		self.setContentsMargins(30, 0, 0, 0)
+		self.setStyleSheet('''
+			font-size: 15px;
+			font-weight: bold;
+			font-family: "Cambria";
+			color: pink;
+			''')
+		self.setWordWrap(True)
+
 class ResultText(QLabel):
 	def __init__(self, parent=None):
 		super(ResultText, self).__init__(parent)
@@ -863,43 +876,19 @@ class UIMain(QWidget):
 		stat_values2.setLayout(stat_value_box2)
 		stat_box.addWidget(stat_values2)
 
-		stat_values3 = QGroupBox('')
-		stat_value_box3 = QVBoxLayout()
-		stat_value_box3.setSpacing(spacing)
-		stat_values3.setLayout(stat_value_box3)
-		stat_box.addWidget(stat_values3)
-
-		stat_values4 = QGroupBox('')
-		stat_value_box4 = QVBoxLayout()
-		stat_value_box4.setSpacing(spacing)
-		stat_values4.setLayout(stat_value_box4)
-		stat_box.addWidget(stat_values4)
-
-		stat_values5 = QGroupBox('')
-		stat_value_box5 = QVBoxLayout()
-		stat_value_box5.setSpacing(spacing)
-		stat_values5.setLayout(stat_value_box5)
-		stat_box.addWidget(stat_values5)
-
 		self.stack16.layout.addWidget(stats)
 
 		stat_name_box.addWidget(FieldText('Business'))
-		stat_value_box1.addWidget(FieldText('PPI '))
-		stat_value_box2.addWidget(FieldText('1% '))
-		stat_value_box3.addWidget(FieldText('2% '))
-		stat_value_box4.addWidget(FieldText('3% '))
-		stat_value_box5.addWidget(FieldText('4% '))
+		stat_value_box1.addWidget(FieldText('Poverty Index'))
+		stat_value_box2.addWidget(FieldText('Poverty Rate'))
 
 		results = self.getHouseholdAverages()
 
 		for i in results:
 			stat_business = i
-			stat_name_box.addWidget(BodyText(str(stat_business)))
-			stat_value_box1.addWidget(BodyText(str(results[i][0])))
-			stat_value_box2.addWidget(BodyText(str(results[i][1])))
-			stat_value_box3.addWidget(BodyText(str(results[i][2])))
-			stat_value_box4.addWidget(BodyText(str(results[i][3])))
-			stat_value_box5.addWidget(BodyText(str(results[i][4])))
+			stat_name_box.addWidget(CellText(str(stat_business)))
+			stat_value_box1.addWidget(CellText(str(results[i][0])))
+			stat_value_box2.addWidget(CellText(str(results[i][1])))
 
 		#Final weighted average poverty rate
 		avg = self.getTotalAverage()
@@ -913,25 +902,29 @@ class UIMain(QWidget):
 		avgBox2 = QGroupBox('')
 		avgHBox1 = QHBoxLayout()
 		avgBox2.setLayout(avgHBox1)
-		avgHBox1.addWidget(FieldText('Score'))
-		avgHBox1.addWidget(FieldText('1% '))
-		avgHBox1.addWidget(FieldText('2% '))
-		avgHBox1.addWidget(FieldText('3% '))
-		avgHBox1.addWidget(FieldText('4% '))
+		avgHBox1.addWidget(FieldText('Weighted Avg PPI'))
+		avgHBox1.addWidget(FieldText('Weighted Avg Poverty Rate'))
+
+		#Basing on self.perc
+		f_avg = 0
+		if self.ppi_percentile == 'One Hundred':
+			f_avg = avg[1]
+		elif self.ppi_percentile == 'Two Hundred':
+			f_avg = avg[2]
+		elif self.ppi_percentile == 'Three Hundred':
+			f_avg = avg[3]
+		elif self.ppi_percentile == 'Poorest':
+			f_avg = avg[4]
 
 		avgBox3 = QGroupBox('')
 		avgHBox2 = QHBoxLayout()
 		avgBox3.setLayout(avgHBox2)
 		try:
-			avgHBox2.addWidget(BodyText(str(avg[0])))
-			avgHBox2.addWidget(BodyText(str(avg[1])))
-			avgHBox2.addWidget(BodyText(str(avg[2])))
-			avgHBox2.addWidget(BodyText(str(avg[3])))
-			avgHBox2.addWidget(BodyText(str(avg[4])))
+			avgHBox2.addWidget(CellText(str(avg[0])))
+			avgHBox2.addWidget(CellText(str(f_avg)))
 		except IndexError as e:
 			pass
 		
-
 		avgVBox.addWidget(avgBox2)
 		avgVBox.addWidget(avgBox3)
 
