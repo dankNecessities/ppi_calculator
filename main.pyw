@@ -10,6 +10,7 @@ class Window(QMainWindow, UIMain):
 		super(Window, self).__init__(parent)
 		self.selected_nation = 'Uganda'
 		self.selected_business = 'Mid range business'
+		self.no_submit = 1
 		self.q1_answer = ''
 		self.q2_answer = ''
 		self.q3_answer = ''
@@ -29,6 +30,9 @@ class Window(QMainWindow, UIMain):
 		self.n_combobox.activated[str].connect(self.on_menu_selection)
 
 	def openHomeUI(self):
+		#Prevent resubmissions
+		self.no_submit = 1
+
 		print("Home")
 		#Remove and reinitialize old page
 		self.QtStack.removeWidget(self.stack0)
@@ -40,6 +44,9 @@ class Window(QMainWindow, UIMain):
 		self.QtStack.setCurrentWidget(self.stack0)
 
 	def openPage1UI(self):
+		#Prevent resubmissions
+		self.no_submit = 0
+
 		print("Page 1")
 		#Remove and reinitialize old page
 		self.QtStack.removeWidget(self.stack1)

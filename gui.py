@@ -258,6 +258,19 @@ class ResultText(QLabel):
 			''')
 		self.setWordWrap(True)
 
+class FinalText(QLabel):
+	def __init__(self, parent=None):
+		super(FinalText, self).__init__(parent)
+		self.setAlignment(Qt.AlignCenter)
+		self.setContentsMargins(30, 0, 0, 0)
+		self.setStyleSheet('''
+			font-size: 30px;
+			font-weight: bold;
+			font-family: "Cambria";
+			color: red;
+			''')
+		self.setWordWrap(True)
+
 class PPIRadioButton(QRadioButton):
 	def __init__(self, parent=None):
 		super(PPIRadioButton, self).__init__(parent)
@@ -532,8 +545,11 @@ class UIMain(QWidget):
 		self.stack11.layout.addWidget(label3)
 
 		#Calculate PPI values
-		self.sum_ppi_scores()
-		self.get_ppi_index()
+		if self.no_submit != 1:
+			self.sum_ppi_scores()
+			self.get_ppi_index()
+		else:
+			self.perc = 0
 
 		#Result Boxes
 		label4 = ResultText('Score: ' + str(self.ppi_score))
@@ -894,6 +910,7 @@ class UIMain(QWidget):
 		avg = self.getTotalAverage()
 		label4 = ResultText('Weighted Average Poverty Rate')
 		
+		
 		avgBox = QGroupBox('')
 		avgVBox = QVBoxLayout()
 		avgBox.setLayout(avgVBox)
@@ -902,8 +919,6 @@ class UIMain(QWidget):
 		avgBox2 = QGroupBox('')
 		avgHBox1 = QHBoxLayout()
 		avgBox2.setLayout(avgHBox1)
-		avgHBox1.addWidget(FieldText('Weighted Avg PPI'))
-		avgHBox1.addWidget(FieldText('Weighted Avg Poverty Rate'))
 
 		#Basing on self.perc
 		f_avg = 0
@@ -920,12 +935,10 @@ class UIMain(QWidget):
 		avgHBox2 = QHBoxLayout()
 		avgBox3.setLayout(avgHBox2)
 		try:
-			avgHBox2.addWidget(CellText(str(avg[0])))
-			avgHBox2.addWidget(CellText(str(f_avg)))
+			avgHBox2.addWidget(FinalText(str(f_avg)))
 		except IndexError as e:
 			pass
 		
-		avgVBox.addWidget(avgBox2)
 		avgVBox.addWidget(avgBox3)
 
 		self.stack16.layout.addWidget(label4)
@@ -949,8 +962,12 @@ class UIMain(QWidget):
 		hbox.addWidget(close_button)
 
 	def sum_ppi_scores(self):
-		self.ppi_score = int(self.q1_answer) + int(self.q2_answer) + int(self.q3_answer) + int(self.q4_answer) + int(self.q5_answer)
-		self.ppi_score += int(self.q6_answer) + int(self.q7_answer) + int(self.q8_answer) + int(self.q9_answer) + int(self.q10_answer)
+		try:
+			self.ppi_score = int(self.q1_answer) + int(self.q2_answer) + int(self.q3_answer) + int(self.q4_answer) + int(self.q5_answer)
+			self.ppi_score += int(self.q6_answer) + int(self.q7_answer) + int(self.q8_answer) + int(self.q9_answer) + int(self.q10_answer)
+		except ValueError as e:
+			self.ppi_score = 0
+			self.no_submit = 1
 
 	def get_ppi_index(self):
 		conn = sqlite3.connect('testdb')
