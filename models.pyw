@@ -202,6 +202,7 @@ class SetupDatabase():
 
 		#Create Business Table
 		Business = wService('Businesses', name='text')
+		Business.insert_item('Unspecified')
 
 		#Create Questions Table, insert default Questions
 		Questions = wService('Questions', name='text', parent='text', q_number='int')

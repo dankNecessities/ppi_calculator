@@ -350,6 +350,9 @@ class UIMain(QWidget):
 		self.QtStack.addWidget(self.stack0)
 		
 	def setupHomeUI(self):
+		#No resubmissions
+		self.no_submit = 1
+
 		#Open database
 		conn = sqlite3.connect('testdb')
 
@@ -415,6 +418,9 @@ class UIMain(QWidget):
 		conn.close()
 
 	def setupBusinessPage(self):
+		#Allow resubmissions from here on
+		self.no_submit = 0
+
 		#Heading
 		label1 = Heading("Business Name")
 		self.stack18.layout.addWidget(label1)
@@ -545,7 +551,9 @@ class UIMain(QWidget):
 		self.stack11.layout.addWidget(label3)
 
 		#Calculate PPI values
-		if self.no_submit != 1:
+		print("NEXT IS DB SUBMIT")
+		if self.no_submit == 0:
+			print("SUBMITTING!!")
 			self.sum_ppi_scores()
 			self.get_ppi_index()
 		else:
@@ -594,12 +602,15 @@ class UIMain(QWidget):
 		conn.close()
 
 	def setupFinalPage(self):
+		#No resubmissions
+		self.no_submit = 1
+
 		#Heading
 		label1 = Heading("Poverty Rate")
 		self.stack12.layout.addWidget(label1)
 
 		#Description
-		label2 = Description("The Weighted Average Poverty Rate")
+		label2 = Description("How the Poverty Rate is obtained")
 		label3 = BodyText("The PPI score is matched to a specific range depending on the selected nationality and" \
 			" percentile, to get the poverty rate.")
 		self.stack12.layout.addWidget(label2)
@@ -898,6 +909,7 @@ class UIMain(QWidget):
 		stat_value_box1.addWidget(FieldText('Poverty Index'))
 		stat_value_box2.addWidget(FieldText('Poverty Rate'))
 
+		print("GETTING RESULTS...")
 		results = self.getHouseholdAverages()
 
 		for i in results:
@@ -922,14 +934,17 @@ class UIMain(QWidget):
 
 		#Basing on self.perc
 		f_avg = 0
-		if self.ppi_percentile == 'One Hundred':
-			f_avg = avg[1]
-		elif self.ppi_percentile == 'Two Hundred':
-			f_avg = avg[2]
-		elif self.ppi_percentile == 'Three Hundred':
-			f_avg = avg[3]
-		elif self.ppi_percentile == 'Poorest':
-			f_avg = avg[4]
+		try:
+			if self.ppi_percentile == 'One Hundred':
+				f_avg = avg[1]
+			elif self.ppi_percentile == 'Two Hundred':
+				f_avg = avg[2]
+			elif self.ppi_percentile == 'Three Hundred':
+				f_avg = avg[3]
+			elif self.ppi_percentile == 'Poorest':
+				f_avg = avg[4]
+		except IndexError as e:
+			pass
 
 		avgBox3 = QGroupBox('')
 		avgHBox2 = QHBoxLayout()
@@ -967,7 +982,7 @@ class UIMain(QWidget):
 			self.ppi_score += int(self.q6_answer) + int(self.q7_answer) + int(self.q8_answer) + int(self.q9_answer) + int(self.q10_answer)
 		except ValueError as e:
 			self.ppi_score = 0
-			self.no_submit = 1
+			#self.no_submit = 1
 
 	def get_ppi_index(self):
 		conn = sqlite3.connect('testdb')
@@ -1093,38 +1108,64 @@ class UIMain(QWidget):
 		res = conn.execute('SELECT * FROM BUSINESSES')
 		res2 = conn.execute('SELECT * FROM households')
 
+		#Transfer to stable memory
+		temp_list = []
+		temp_list2 = []
+		
+		for i in res:
+			temp_list.append(i)
+
+		for i in res2:
+			temp_list2.append(i)
+
+		print("BUSINESSES: "+str(temp_list))
+		print("Households: "+str(temp_list2))
+
+		#Count households under each business, get totals for indices
+		#Format: dict{NAME: [NO_OF_HOUSEHOLDS_IN_BUSINESS, LIST_OF_TOTAL_INDEX_FOR_HOUSEHOLDS_IN_INDEX]}
+		count_dict = {}
+		for i in temp_list:
+			n = 0
+			gross = [0, 0, 0, 0, 0]
+			totals = []
+			for j in temp_list2:
+				if (i[0] == j[0]):
+					gross[0] += j[1]
+					gross[1] += j[2]
+					gross[2] += j[3]
+					gross[3] += j[4]
+					gross[4] += j[5]
+					n += 1
+			totals.append(n)
+			totals.append(gross)
+			count_dict[i[0]] = totals
+
+		print("COUNTED: "+str(count_dict))
+
+		#Get the weighted average for each of the five indices
 		sum1 = 0
 		sum2 = 0
 		sum3 = 0
 		sum4 = 0
 		sum5 = 0
-		for j in res2:
-			sum1 += round(j[1], 2)
-			sum2 += round(j[2], 2)
-			sum3 += round(j[3], 2)
-			sum4 += round(j[4], 2)
-			sum5 += round(j[5], 2)
-		
-		sum_list = [sum1, sum2, sum3, sum4, sum5]
 
-		res3 = conn.execute('SELECT * FROM households')
-		b_len = 0
-		for i in res:
-			n = 0
-			for j in res3:
-				if j[0] == i[0] and n == 0:
-					print("here")
-					b_len += len(j)
-					n = 1
-			
-		print(b_len)
-		avg_list = []
-		for k in sum_list:
-			try:
-				avg_list.append(round((k/b_len), 2))
-			except ZeroDivisionError as e:
-				pass
-			
+		m = 0
+		for l in count_dict:
+			k = count_dict[l]
+			m += k[0]
+			count_list = k[1]
+			sum1 += k[1][0]
+			sum2 += k[1][1]
+			sum3 += k[1][2]
+			sum4 += k[1][3]
+			sum5 += k[1][4]
+
+		try:
+			avg_list = [round((sum1/m), 2), round((sum2/m), 2), round((sum3/m), 2), round((sum4/m), 2), round((sum5/m), 2)]
+		except ZeroDivisionError as e:
+			avg_list = [0, 0, 0, 0, 0]
+		
+		print("Weighted average: "+str(avg_list))
 
 		conn.close()
 
